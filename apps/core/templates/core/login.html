@@ -1,0 +1,48 @@
+<div class="login">
+  <div class="inner">
+      <span class="head">Log in</span>
+      <form class="account-login-form" action="{% url "account_:login" %}" method="post">
+          {% csrf_token %}
+
+          {{ form.username}}
+          {{ form.password}}
+          <button type="submit">Sign in</button>
+          <!-- <input type="text" name="email" class="form-input" placeholder="email" maxlength="50" minlength="2" required id="id_email">
+          <input type="text" name="password" class="form-input" placeholder="password" maxlength="50" minlength="2" required id="id_password">
+          <button>Log in</button> -->
+      </form>
+      <span class="icon2"><span>OR</span></span>
+      <div class="floor">
+          <span class="main">Don't have an account? <span class="in">Sign up</span></span>
+          <span>Forgotten password?</span>
+      </div>
+  </div>
+</div>
+
+
+
+{% block scripts %}
+<script>
+    $('.signUp > .inner > .floor > .main').on(
+        {click: function(e){
+            e.preventDefault();
+            $('.signUp').css('display', 'none');
+            $('.login').css('display', 'flex');
+
+        }}
+    )
+
+    $('.login > .inner > .floor > .main').on(
+        {click: function(e){
+            e.preventDefault();
+            $('.login').css('display', 'none');
+            $('.signUp').css('display', 'flex');
+
+        }}
+    )
+</script>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+
+{% block title %} Reset {% endblock %}
+
+
+{% block content %}
+<style>
+</style>
+<div>
+    <div>
+        {% if 'email' in request.get_full_path %}
+            <h3>Password Reset Was Successful</h3>
+            <p>Check your email for instructions</p>
+        {% endif %}
+        {% if 'complete' in request.get_full_path %}
+            <h3>Password Reset Was Successful</h3>
+            <a href="{% url 'account_:login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

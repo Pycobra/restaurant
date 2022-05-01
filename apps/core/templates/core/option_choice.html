@@ -1,0 +1,72 @@
+<div class="option-choice" data-index="dummy">
+  <div class="inner" style="width:50%;">
+      <i class="fa fa-times"></i>
+      <div class="top">
+          <span class="img-place"><img alt-text="image"></span>
+          <span class="head">our catalogue of sweet meal will burn your taste with sweet meal</span>
+          <div class="top-wrapper">
+              <span class="head">Customise your meal</span>
+              <div class="ingredient">
+              </div>
+          </div>
+          <div class="bottom-wrapper">
+              <span class="head">special instruction</span>
+              <textarea class="" placeholder="e.g No pepper/ No Salt" name="content2" cols="40" rows="5" id="id_content"></textarea>
+          </div>
+      </div>
+      <div class="bottom">
+          <button class="button" id="add-to-cart-btn"><i class="fa fa-cart-plus" style="font-weight:bold;font-size:25px;margin-right:40px;"></i>Add&nbsp;to&nbsp;basket</button>
+      </div>
+  </div>
+</div>
+
+
+
+{% block scripts %}
+<script>
+    $('.fa-times').on(
+        {click: function(e){
+          $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+          //$('.dummy > .left > .fa-caret-left').css('display','none')
+          option_choice.style.display = "none";
+        }}
+    )
+
+    $('#add-to-cart-btn').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:cart_detail' %}",
+                    data: {
+                        productID: $(this).attr('data-index'),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        mainAction: 'post',
+                        subAction: 'add'
+                    },
+                    success: function(json){
+                        $(".modal-content > .line1 > .head-2 > .close > a > .cart-place > .qty").text(json.cart_length);
+                        if (json.product_exist == true) {
+                            $('#notification-message').html('<i class="fa fa-info"></i><span>This item already exists in your cart</span>')
+                        }
+                        else {
+                            $('#notification-message').html('<i class="fa fa-info"></i><span>item has been added to cart</span>>')
+                        }
+                        $('#head-notification').slideDown(500).delay(2000).slideUp(500);
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False') {
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+</script>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+{% block stylesheet %}{% static 'styles/account/login.css' %}{% endblock %}
+{% block stylesheet2 %}{% static 'styles/breadcrumbs.css' %}{% endblock %}
+
+
+{% block title %} Sign In {% endblock %}
+{% block content %}
+{% if request.user.is_authenticated %}
+    <script>
+        window.location.href = "{% url 'account_:dashboard' %}"
+    </script>
+{% endif %}
+
+<div id="form" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
+    <div id="signin">
+        <form class="account-login-form" action="{% url "account_:login" %}" method="post">
+          {% csrf_token %}
+          <h1 class="">Sign In</h1>
+            <div style="width:95%;padding:0 10px;{% if form.errors %} display:flex; {% endif %}" id="head-notification" class="notification-success">
+                <div id="notification-message" style="color:var(--normalwhite);padding:20px 5px;">Incorrect username Or password!</div>
+            </div>
+          <!--<label class="form-label">{{ form.username.label}}</label>-->
+          <div class="input username">
+              {{ form.username}}
+              <div class="alert" role="alert" data-index="email">
+                  <p>{{ form.username.errors }}</p>
+              </div>
+          </div>
+          <!--<label class="form-label">{{ form.password.label}}</label>-->
+          <div class="input password">
+              {{ form.password}}
+              <i class="fa fa-eye-slash"></i>
+              <div class="alert" role="alert" data-index="email">
+                  <p>{{ form.password.errors }}</p>
+              </div>
+          </div>
+          <div class="block">
+              <span style="font-size:13px;"><input type="checkbox" style="font-size:15px;">Remember me</span>
+              <span style="font-size:14px;font-weight:700;"><a style="color:var(--darkblue);" href="{% url "account_:password_reset" %}">Forgotten Your Password?</a></span>
+          </div>
+          <input type="hidden" name="next" value="{{ next }}">
+          <button class="btn1" type="submit" value="Log-in"><i class="fa fa-sign-in" style="font-weight:500;font-size:25px;margin:0 28% 0 10px"></i>Sign in</button>
+          <button class="btn2" type="submit" value="Log-in"><i class="fa fa-facebook" style="font-weight:500;font-size:25px;margin:0 28% 0 10px"></i>Sign in With Facebook</button>
+        </form>
+            <!-- <div class="columns">
+                <div class="column is-6">
+                    <div class="field">
+                        <div class="label"><label>{{ form.email.label }}<span>(Required)</span></label></div>
+                        <div class="input">{{ form.email }}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label"><label>{{ form.password.label }}<span></span></label></div>
+                        <div class="input">{{ form.password }}</div>
+                    </div>
+                    <div>
+                        <input class="" type="hidden" name="next" value="{{ next }}">
+                        <button class="button" type="submit">Login</button>
+                        <p><a href="{% url 'account_:register' %}">Create an account</a></p>
+                    </div>
+                </div>
+            </div> -->
+    </div>
+
+    <span class="split-line"></span>
+
+    <div id="create-account">
+        <div class="block">
+          <h1>Open an account</h1>
+          <p>here are some of the benefits you stand to enjoy</p>
+          <div class="fast-checkout">
+              <i class="fa fa-heart-o"></i>
+              <div>
+                  <span>Fast checkout</span>
+                  <div style="margin-top:5px;">Your payment is saved and ready</div>
+              </div>
+          </div>
+          <div class="easy-track">
+              <i class="fa fa-heart-o"></i>
+              <div>
+                  <span>Easy order tracking</span>
+                  <div style="margin-top:5px;">Allows you keep an eye on your order</div>
+              </div>
+          </div>
+          <div class="order-history">
+              <i class="fa fa-heart-o"></i>
+              <div>
+                  <span>Order history</span>
+                  <div style="margin-top:5px;">Saves all your order history saved and one click away</div>
+              </div>
+          </div>
+
+          <a href="{% url "account_:register" %}"><button class="btn1" type="submit" value="Log-in"><i class="fa fa-sign-in" style="font-weight:500;font-size:25px;margin:0 22% 0 10px"></i>Create&nbsp;An&nbsp;Account</button></a>
+          <a><button class="btn2" type="submit" value="Log-in"><i class="fa fa-facebook" style="font-weight:500;font-size:25px;margin:0 10% 0 10px"></i>Register&nbsp;With&nbsp;Facebook</button></a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

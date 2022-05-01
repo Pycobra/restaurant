@@ -1,0 +1,1119 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+{% block stylesheet %}{% static 'styles/account/forms.css' %}{% endblock %}
+{% block stylesheet2 %}{% static 'styles/breadcrumbs.css' %}{% endblock %}
+{% block stylesheet3 %}{% static 'styles/cart/cart.css' %}{% endblock %}
+
+{% block stylesheet4 %}{% static 'styles/option.css' %}{% endblock %}
+{% block stylesheet5 %}{% static 'styles/registrations.css' %}{% endblock %}
+
+{% block title %}Welcome{% if request.user.is_authenticated %} to {{ request.user.user_name }}{% endif %}{% endblock %}
+
+
+
+{% block content %}
+<section style="background-color:var(--lightgrey);">
+    <div id="homepage">
+        <div class="fill-up">
+            <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+            <span class="line-1"></span>
+            <span class="place1">Excite&nbsp;your&nbsp;taste&nbsp;bud</span>
+            <span class="place2">WITH&nbsp;TASTY&nbsp;9JA DISHES</span>
+            <span class="line-2"></span>
+        </div>
+    </div>
+
+    {% for cat in categories %}
+    {% if cat.product_category.all %}
+    <div class="reservation">
+        <span class="envelope"></span>
+        <span class="envelope2"></span>
+        <div class="box">
+            <div class="place-1">
+                <span class="icon"><i class="fa fa-image"></i></span>
+                <h1 class="">{{ cat.name }} Delicacy</h1>
+                <span class="icon2"><i class="fa fa-image"></i></span>
+                <span class="line-1"></span>
+                <div class="block">
+                    <span>Our Delicious Story</span>
+                    <span>Buy our food now, we go sell for you</span>
+                    <span>
+                          Buy our food now, we go sell for you Buy our
+                          food now, we go sell for you,Buy our
+                          food now, we go sell for you
+                    </span>
+                </div>
+                <div class="btn-place"><button>Reservation</button><button data-index="{{cat.id}}" data-title="{{cat.name}}" class="myBtn">See menu</button></div>
+            </div>
+            {% for i in cat.product_category.all %}
+            {% if forloop.counter <= 2 %}
+            {% for image in i.product_images.all %}
+            {% if image.is_main %}
+            <div class="place-2">
+                <img  style="z-index:1;" src="{{ image.images.url }}" alt="">
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+  {% if messages %}
+  <div id="pop-notification" class="alert alert-success">
+      <div class="alert alert-success">
+          PUT YOUR MESSAGE HERE
+      </div>
+  </div>
+  {% endif %}
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+
+          <div class="line1">
+              <div class="head-1"></div>
+              <div class="head-2">
+                  <div class="close"><i class="fa fa-cutlery"></i></div>
+                  <div class="close"><span><i class="fa fa-info"></i></span></div>
+                  <div class="close" style="padding:0;">
+                      <a>
+                      <div class="cart-place">
+                          <i class="fa fa-shopping-cart"></i>
+                            {% with total_qty=cart|length %}
+                            <span class="qty">{% if total_qty > 0 %}{{ total_qty }}{% else %}0{% endif %}</span>
+                            {% endwith %}
+                      </div>
+                      </a>
+                  </div>
+              </div>
+          </div>
+
+          {% include 'core/login.html' %}
+
+          {% include 'core/signup.html' %}
+
+          {% include 'core/body.html' %}
+
+          {% include 'core/form.html' %}
+
+          {% include 'core/option_choice.html' %}
+      </div>
+
+    </div>
+
+    {% for i in categories %}
+    <div id="category-box-inline" style="padding:20px 0;">
+        <div class="box" id="top-selling" style="padding:20px 0;">
+            {% if all_products %}
+            <div class="inner-box">
+                <div class="box-header">
+                    <span class="item-1">{{ i.name }} Delicacies</span>
+                </div>
+                <div class="box-body">
+                    {% for i in all_products %}
+                    <a href="{% url 'product_:product_detail_' i.category.slug i.slug %}">
+                        <div class="card">
+                            <div class="card-img" style="z-index:1;">
+                                <span><strong class="title">{{ i.title|slice:":50" }}</strong></span>
+
+                                <button  style="z-index:5;" data-index="{{ i.id }}" class="add-to-cart-btn" value="{{ i.id }}"><i class="fa fa-cart-plus" style="font-size:20px;"></i></button>
+
+                                {% for image in i.product_images.all %}
+                                {% if image.is_main %}
+                                <img  style="z-index:1;" src="{{ image.images.url }}" alt="{{ image.images.alt_text }}">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+</section>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    user_authenticated = '{{user.is_authenticated}}'
+    var modal = document.getElementById("myModal");
+    var form = document.getElementById("form");
+    var option_choice = document.getElementsByClassName("option-choice")[0];
+    var btn = document.getElementsByClassName("myBtn")[0];
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+    }
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+     // modal.style.display = "none";
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    var login = document.getElementsByClassName("login")[0];
+
+    window.onclick = function(event) {
+      if (event.target == form) {
+          form.style.display = "none";
+      }
+
+      if (event.target == login) {
+          login.style.display = "none";
+      }
+
+      if (event.target == option_choice) {
+          $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+          //$('.dummy > .left > .fa-caret-left').css('display','none')
+          option_choice.style.display = "none";
+      }
+
+      if (event.target == modal && login.style.display == "flex") {
+          login.style.display = "none";
+      }
+
+      else if (event.target == modal) {
+          modal.style.display = "none";
+      }
+    }
+
+
+
+    $('.myBtn').on(
+        {click: function(e){
+            e.preventDefault();
+            var id =$(this).attr('data-index');
+            var category_title =$(this).attr('data-title');
+            $.ajax({
+                type:"POST",
+                url:" {% url 'product_:all_product' %}",
+                data: {
+                    id: id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'post'
+                },
+                success: function(json){
+                     modal.style.display = "block";
+                     $('.modal-content > .body > .wrapper > .non-dummy').remove()
+                     $('.option-choice[data-index="dummy"]').css('display','none')
+
+                    $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                    $('.close:first-child').css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+                    $('.fa-cutlery').css('color','var(--normalblack)')
+
+                     $('.lower-block').css('display','none')
+                     $('#main-container').css('display','none')
+                     $('.wrapper').css('display','flex')
+
+                     $(json.place.table).each(function(index, values){
+                        $('.modal-content > .line1 > .head-1').text(category_title + ' Delicacies').css('color','var(--normalblack)')
+                        if (index == 0){
+                           $('.modal-content > .body > .head-pic > img').attr('src', '/media/' + values.fields.images + '')
+                        }
+
+                        inside_it = $('.modal-content > .body > .wrapper > .dummy[data-index="dummy"]').clone(true)
+                        inside_it.addClass('non-dummy')
+                        inside_it.attr('data-index' ,'' + values.pk + '')
+                        inside_it.html('<div class="left"> \
+                                                    <h1>' + values.fields.title + '</h1> \
+                                                    <span class="line-1"></span> \
+                                                    <h2>' + values.fields.ingredient + '</h2> \
+                                                    <span class="description">' + values.fields.description + '</span> \
+                                                    <span class="price"><strike>$' + values.fields.discount_price + '</strike></span> \
+                                                    <span class="disc-price">$' + values.fields.price + '</span> \
+                                                    <span class="line-1"></span> \
+                                                    <!-- <i class="fa fa-caret-left"> --> </i> \
+                                                </div> \
+                                                <div class="right"> \
+                                                    <img src="/media/' + values.fields.images + '" alt="an-image"> \
+                                                </div>')
+                        $('.modal-content > .body > .wrapper').append(inside_it)
+
+                        /*
+                        $('.modal-content > .body > .wrapper').append('<div class="dummy" data-index="' + meal_id + '"> \
+                                                <div class="left"> \
+                                                    <h1>' + title + '</h1> \
+                                                    <span class="line-1"></span> \
+                                                    <h2>' + ingredient + '</h2> \
+                                                    <span class="description">' + description + '</span> \
+                                                    <span class="price"><strike>$' + discount_price + '</strike></span> \
+                                                    <span class="disc-price">$' + price + '</span> \
+                                                    <span class="line-1"></span> \
+                                                </div> \
+                                                <div class="right"> \
+                                                    <img src="/media/' + images + '" alt="an-image"> \
+                                                </div> \
+                                            </div>')
+                                            */
+                     })
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+
+
+
+    $('.close:nth-child(1)').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+            $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+            $('.lower-block').css('display','none')
+            $('#main-container').css('display','none')
+            $('.wrapper').css('display','flex')
+        }}
+    )
+
+    $('.close:nth-child(2)').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                e.preventDefault();
+                var prod_id=$(this).data('index');
+                $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+                $('.wrapper').css('display','none')
+                $('#main-container').css('display','none')
+                $('.lower-block').css('display','flex')
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:delivery_and_address' %}",
+                    data: {
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                    },
+                    success: function(json){
+                        $('.removable-card1').remove()
+                        $('.removable-card2').remove()
+                        $(json.mydeliveryopt.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox > .deliveryOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','none')
+                            $('.lower-block > .first-box > .block1 > .card1').html(
+                                    '<div class="row removable-card1 single' + values.pk + '"> \
+                                        <div class="place1"> \
+                                            <div class="icon"> \
+                                              <i class="fa fa-car"></i> \
+                                            </div> \
+                                            <div class="card-body"> \
+                                              <p class="card-text name">' + values.fields.delivery_name + '</p> \
+                                              <p class="card-text"><span>Your order should be delivered within</span> <span>' + values.fields.delivery_timeframe + '</span></p> \
+                                              <p class="card-text"><span>delivery regionz</span> <span>' + values.fields.delivery_region + '</span></p> \
+                                              <p class="card-text"><span>delivery method</span> <span>' + values.fields.delivery_method + '</span></p> \
+                                              <p class="card-text"><span>delivery window</span> <span>' + values.fields.delivery_window + '</span></p> \
+                                            </div> \
+                                        </div> \
+                                    </div>')
+                                    $('.lower-block > .first-box > .block1 > .card1').after('<div><button class="select-delivery1" style="margin:10px;margin-bottom:15px;">select another delivery method3</button></div>')
+                            $('.lower-block > .first-box > .block1 > .all > .card1 > .single' + values.pk + ' ').append(card)
+                        })
+                        $(json.deliveryoptions.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox > .deliveryOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','none')
+
+                            $('.lower-block > .first-box > .block1 > .all').append(
+                                  '<div class="card removable-card2 card2" data-index="' + values.pk + '"> \
+                                    <div class="row single' + values.pk + '"> \
+                                        <div class="place1"> \
+                                            <div class="icon"> \
+                                              <i class="fa fa-car"></i> \
+                                            </div> \
+                                            <div class="card-body"> \
+                                              <p class="card-text name">' + values.fields.delivery_name + '</p> \
+                                              <p class="card-text"><span>Your order should be delivered within</span> <span>' + values.fields.delivery_timeframe + '</span></p> \
+                                              <p class="card-text"><span>delivery region</span> <span>' + values.fields.delivery_region + '</span></p> \
+                                              <p class="card-text"><span>delivery method</span> <span>' + values.fields.delivery_method + '</span></p> \
+                                              <p class="card-text"><span>delivery window</span> <span>' + values.fields.delivery_window + '</span></p> \
+                                            </div> \
+                                        </div> \
+                                    </div> \
+                            </div>')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .single' + values.pk + ' ').append(card)
+                        })
+
+                        $(json.mydeliveryadd.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox > .addressOption').attr('value','' + values.pk + '')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit > .icon > .fa-trash').attr('value','' + values.pk + '')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit > .icon > .fa-pencil').attr('value','' + values.pk + '')
+                            checkbox = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            edit = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit').clone(true)
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','none')
+                            $('.lower-block > .first-box > .block2 > .card1').html(
+                                 '<div class="row removable-card1 single' + values.pk + '"> \
+                                    <div class="card-body"> \
+                                      <p class="card-text"><span>Fullname0: </span> <span>' + values.fields.full_name + '</span></p> \
+                                      <p class="card-text"><span>Phone: </span> <span>' + values.fields.phone + '</span></p> \
+                                      <p class="card-text"><span>Email:</span> <span class="email-text" data-index="' + values.pk + '">' + values.fields.email + '</span></p> \
+                                      <p class="card-text"><span>Post code:</span> <span>' + values.fields.postal_code + '</span></p> \
+                                      <p class="card-text"><span>Town/city:</span> <span>' + values.fields.address_line1 + '</span></p> \
+                                      <p class="card-text"><span>Address line1:</span> <span>' + values.fields.address_line2 + '</span></p> \
+                                      <p class="card-text"><span>Address line2:</span> <span>' + values.fields.city + '</span></p> \
+                                    </div> \
+                                    <span class="edit"> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-trash del-address" data-index="' + values.pk + '"></i></span> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + values.pk + '"></i></span> \
+                                    </span> \
+                                </div>')
+                            $('.lower-block > .first-box > .block2 > .card1').after('<div><button class="select-address1" style="margin:10px;margin-bottom:15px;">1select another address</button></div>')
+                            $('.lower-block > .first-box > .block2 > .all > .card1 > .row' + values.pk + ' ').append(checkbox)
+                            $('.lower-block > .first-box > .block2 > .all > .card1 > .row' + values.pk + ' ').append(edit)
+                        })
+                        $(json.deliveryaddressess.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox > .addressOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','none')
+
+                            $('.lower-block > .first-box > .block2 > .all').append(
+                                '<div class="card removable-card2 card2" data-index="' + values.pk + '"> \
+                                <div class="row single' + values.pk + '"> \
+                                    <div class="card-body"> \
+                                      <p class="card-text"><span>Fullname2: </span> <span>' + values.fields.full_name + '</span></p> \
+                                      <p class="card-text"><span>Phone: </span> <span>' + values.fields.phone + '</span></p> \
+                                      <p class="card-text"><span>Email:</span> <span class="email-text" data-index="' + values.pk + '">' + values.fields.email + '</span></p> \
+                                      <p class="card-text"><span>Post code:</span> <span>' + values.fields.postal_code + '</span></p> \
+                                      <p class="card-text"><span>Town/city:</span> <span>' + values.fields.address_line1 + '</span></p> \
+                                      <p class="card-text"><span>Address line1:</span> <span>' + values.fields.address_line2 + '</span></p> \
+                                      <p class="card-text"><span>Address line2:</span> <span>' + values.fields.city + '</span></p> \
+                                    </div> \
+                                    <span class="edit"> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-trash del-address" data-index="' + values.pk + '"></i></span> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + values.pk + '"></i></span> \
+                                    </span> \
+                                </div> \
+                              </div>')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .single' + values.pk + ' ').append(card)
+                        })
+
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False'){
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+
+    $('.close:nth-child(3)').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                e.preventDefault();
+                $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+
+                $('.wrapper').css('display','none')
+                $('.lower-block').css('display','none')
+                $('#main-container').css('display','block')
+
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:inside_cart' %}",
+                    data: {
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'post'
+                    },
+                    success: function(json){
+                        $('.cart-item-block').remove()
+                        if (json.cart_items.length != 0){
+                            $('#main-container > .main-box > .box').css('height','auto')
+                            $('#main-container > .main-box > .box > p').css('display','none')
+                            $('.total-qty').text(json.total_qty);
+                            $('.total-cost').text('N' + json.total_amt);
+                            $('#delivery-amt').text('N' + json.delivery_amt);
+                            $('#main-container > .main-box > .box > .inside-box > .checkout').css('display','flex')
+
+                            $(json.cart_items).each(function(index, values){
+                                $('.cart-item-dummy').css('display','flex')
+                                $('.cart-item-dummy').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block1 > .innerblock1 > img').attr('src', '/media/' + values.images + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .title').text(values.title)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .price > strike').text(values.price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .price1').text(values.discount_price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > span').text(values.quantity).attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .second-line > button').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > button:first-child').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > button:last-child').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .items-total').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .items-total').text(values.total_price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .second-line > button').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                the_clone = $('.cart-item-dummy').clone(true)
+                                the_clone.removeClass('cart-item-dummy')
+                                the_clone.addClass('cart-item-block')
+                                $('.cart-item-dummy').css('display','none')
+                                $('#main-container > .main-box > .box > .inside-box > .body-row').append(the_clone)
+                            })
+                        } else {
+                            $('#main-container > .main-box > .box').css('height','100%')
+                            $('#main-container > .main-box > .box > .inside-box > .checkout').css('display','none')
+                            $('#main-container > .main-box > .box').append('<p>You dont have any product in your cart</p>')
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False'){
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+
+</script>
+{% endblock %}
+
+
+
+<!--
+<script>
+    user_authenticated = '{{user.is_authenticated}}'
+    var modal = document.getElementById("myModal");
+    var form = document.getElementById("form");
+    var option_choice = document.getElementsByClassName("option-choice")[0];
+    var btn = document.getElementsByClassName("myBtn")[0];
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+    }
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+     // modal.style.display = "none";
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    var login = document.getElementsByClassName("login")[0];
+
+    window.onclick = function(event) {
+      if (event.target == form) {
+          form.style.display = "none";
+      }
+
+      if (event.target == login) {
+          login.style.display = "none";
+      }
+
+      if (event.target == option_choice) {
+          $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+          //$('.dummy > .left > .fa-caret-left').css('display','none')
+          option_choice.style.display = "none";
+      }
+
+      if (event.target == modal && login.style.display == "flex") {
+          login.style.display = "none";
+      }
+
+      else if (event.target == modal) {
+          modal.style.display = "none";
+      }
+    }
+
+
+
+    $('.myBtn').on(
+        {click: function(e){
+            e.preventDefault();
+            var id =$(this).attr('data-index');
+            var category_title =$(this).attr('data-title');
+            $.ajax({
+                type:"POST",
+                url:" {% url 'product_:all_product' %}",
+                data: {
+                    id: id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'post'
+                },
+                success: function(json){
+                     modal.style.display = "block";
+                     $('.modal-content > .body > .wrapper > .non-dummy').remove()
+                     $('.option-choice[data-index="dummy"]').css('display','none')
+
+                    $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                    $('.close:first-child').css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+                    $('.fa-cutlery').css('color','var(--normalblack)')
+
+                     $('.lower-block').css('display','none')
+                     $('#main-container').css('display','none')
+                     $('.wrapper').css('display','flex')
+
+                     $(json.place.table).each(function(index, values){
+                        $('.modal-content > .line1 > .head-1').text(category_title + ' Delicacies').css('color','var(--normalblack)')
+                        if (index == 0){
+                           $('.modal-content > .body > .head-pic > img').attr('src', '/media/' + values.fields.images + '')
+                        }
+
+                        inside_it = $('.modal-content > .body > .wrapper > .dummy[data-index="dummy"]').clone(true)
+                        inside_it.addClass('non-dummy')
+                        inside_it.attr('data-index' ,'' + values.pk + '')
+                        inside_it.html('<div class="left"> \
+                                                    <h1>' + values.fields.title + '</h1> \
+                                                    <span class="line-1"></span> \
+                                                    <h2>' + values.fields.ingredient + '</h2> \
+                                                    <span class="description">' + values.fields.description + '</span> \
+                                                    <span class="price"><strike>$' + values.fields.discount_price + '</strike></span> \
+                                                    <span class="disc-price">$' + values.fields.price + '</span> \
+                                                    <span class="line-1"></span> \
+                                                </div> \
+                                                <div class="right"> \
+                                                    <img src="/media/' + values.fields.images + '" alt="an-image"> \
+                                                </div>')
+                        $('.modal-content > .body > .wrapper').append(inside_it)
+
+                        /*
+                        $('.modal-content > .body > .wrapper').append('<div class="dummy" data-index="' + meal_id + '"> \
+                                                <div class="left"> \
+                                                    <h1>' + title + '</h1> \
+                                                    <span class="line-1"></span> \
+                                                    <h2>' + ingredient + '</h2> \
+                                                    <span class="description">' + description + '</span> \
+                                                    <span class="price"><strike>$' + discount_price + '</strike></span> \
+                                                    <span class="disc-price">$' + price + '</span> \
+                                                    <span class="line-1"></span> \
+                                                </div> \
+                                                <div class="right"> \
+                                                    <img src="/media/' + images + '" alt="an-image"> \
+                                                </div> \
+                                            </div>')
+                                            */
+                     })
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+
+    $('.dummy').on(
+        {click: function(e){
+            e.preventDefault();
+            var id =$(this).attr('data-index');
+            $.ajax({
+                type:"POST",
+                url:" {% url 'product_:single_product' %}",
+                data: {
+                    id: id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'post'
+                },
+                success: function(json){
+                    $('.top > .top-wrapper > .ingredient > div').remove()
+                    $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+                    //$('.dummy > .left > .fa-caret-left').css('display','none')
+
+                    $('.dummy[data-index="' + id + '"] > .left').css('background-color','#CCCDC6')
+                    $('.dummy[data-index="' + id + '"] > .left').css('padding','5px').css('border-radius','3px')
+                    //$('.dummy[data-index="' + id + '"] > .left > .fa-caret-left').css('display','block')
+                    $(json.place.table).each(function(index, values){
+                        ingredient = values.fields.ingredient.split(",")
+                        for (let i=0; i < ingredient.length; i++){
+                            $('.option-choice[data-index="dummy"] > .inner > .top > .top-wrapper > .ingredient').append('<div><input type="checkbox"><span>' + ingredient[i] + '</span></div>')
+                        }
+                        $('.option-choice[data-index="dummy"] > .inner > .bottom > button').attr('data-index','' + values.pk + '')
+                        $('.option-choice[data-index="dummy"] > .inner > .top > .img-place > img').attr('src','/media/' + values.fields.images + '')
+                        $('.option-choice[data-index="dummy"]').css('display','flex')
+                    })
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+    $('.fa-times').on(
+        {click: function(e){
+          $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+          //$('.dummy > .left > .fa-caret-left').css('display','none')
+          option_choice.style.display = "none";
+        }}
+    )
+    $('.times').on(
+        {click: function(e){
+            $('#form').css('display','none')
+        }}
+    )
+
+    $('#add-to-cart-btn').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:cart_detail' %}",
+                    data: {
+                        productID: $(this).attr('data-index'),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        mainAction: 'post',
+                        subAction: 'add'
+                    },
+                    success: function(json){
+                        $(".modal-content > .line1 > .head-2 > .close > a > .cart-place > .qty").text(json.cart_length);
+                        if (json.product_exist == true) {
+                            $('#notification-message').html('<i class="fa fa-info"></i><span>This item already exists in your cart</span>')
+                        }
+                        else {
+                            $('#notification-message').html('<i class="fa fa-info"></i><span>item has been added to cart</span>>')
+                        }
+                        $('#head-notification').slideDown(500).delay(2000).slideUp(500);
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False') {
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+
+    $('.close:nth-child(1)').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+            $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+            $('.lower-block').css('display','none')
+            $('#main-container').css('display','none')
+            $('.wrapper').css('display','flex')
+        }}
+    )
+
+    $('.close:nth-child(2)').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                e.preventDefault();
+                var prod_id=$(this).data('index');
+                $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+                $('.wrapper').css('display','none')
+                $('#main-container').css('display','none')
+                $('.lower-block').css('display','flex')
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:delivery_and_address' %}",
+                    data: {
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                    },
+                    success: function(json){
+                        $('.removable-card1').remove()
+                        $('.removable-card2').remove()
+                        $(json.mydeliveryopt.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox > .deliveryOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','none')
+                            $('.lower-block > .first-box > .block1 > .card1').html(
+                                    '<div class="row removable-card1 single' + values.pk + '"> \
+                                        <div class="place1"> \
+                                            <div class="icon"> \
+                                              <i class="fa fa-car"></i> \
+                                            </div> \
+                                            <div class="card-body"> \
+                                              <p class="card-text name">' + values.fields.delivery_name + '</p> \
+                                              <p class="card-text"><span>Your order should be delivered within</span> <span>' + values.fields.delivery_timeframe + '</span></p> \
+                                              <p class="card-text"><span>delivery regionz</span> <span>' + values.fields.delivery_region + '</span></p> \
+                                              <p class="card-text"><span>delivery method</span> <span>' + values.fields.delivery_method + '</span></p> \
+                                              <p class="card-text"><span>delivery window</span> <span>' + values.fields.delivery_window + '</span></p> \
+                                            </div> \
+                                        </div> \
+                                    </div>')
+                                    $('.lower-block > .first-box > .block1 > .card1').after('<div><button class="select-delivery1" style="margin:10px;margin-bottom:15px;">select another delivery method3</button></div>')
+                            $('.lower-block > .first-box > .block1 > .all > .card1 > .single' + values.pk + ' ').append(card)
+                        })
+                        $(json.deliveryoptions.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox > .deliveryOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .dummyrow').css('display','none')
+
+                            $('.lower-block > .first-box > .block1 > .all').append(
+                                  '<div class="card removable-card2 card2" data-index="' + values.pk + '"> \
+                                    <div class="row single' + values.pk + '"> \
+                                        <div class="place1"> \
+                                            <div class="icon"> \
+                                              <i class="fa fa-car"></i> \
+                                            </div> \
+                                            <div class="card-body"> \
+                                              <p class="card-text name">' + values.fields.delivery_name + '</p> \
+                                              <p class="card-text"><span>Your order should be delivered within</span> <span>' + values.fields.delivery_timeframe + '</span></p> \
+                                              <p class="card-text"><span>delivery region</span> <span>' + values.fields.delivery_region + '</span></p> \
+                                              <p class="card-text"><span>delivery method</span> <span>' + values.fields.delivery_method + '</span></p> \
+                                              <p class="card-text"><span>delivery window</span> <span>' + values.fields.delivery_window + '</span></p> \
+                                            </div> \
+                                        </div> \
+                                    </div> \
+                            </div>')
+                            $('.lower-block > .first-box > .block1 > .all > .card2 > .single' + values.pk + ' ').append(card)
+                        })
+
+                        $(json.mydeliveryadd.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox > .addressOption').attr('value','' + values.pk + '')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit > .icon > .fa-trash').attr('value','' + values.pk + '')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit > .icon > .fa-pencil').attr('value','' + values.pk + '')
+                            checkbox = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            edit = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .edit').clone(true)
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','none')
+                            $('.lower-block > .first-box > .block2 > .card1').html(
+                                 '<div class="row removable-card1 single' + values.pk + '"> \
+                                    <div class="card-body"> \
+                                      <p class="card-text"><span>Fullname0: </span> <span>' + values.fields.full_name + '</span></p> \
+                                      <p class="card-text"><span>Phone: </span> <span>' + values.fields.phone + '</span></p> \
+                                      <p class="card-text"><span>Email:</span> <span class="email-text" data-index="' + values.pk + '">' + values.fields.email + '</span></p> \
+                                      <p class="card-text"><span>Post code:</span> <span>' + values.fields.postal_code + '</span></p> \
+                                      <p class="card-text"><span>Town/city:</span> <span>' + values.fields.address_line1 + '</span></p> \
+                                      <p class="card-text"><span>Address line1:</span> <span>' + values.fields.address_line2 + '</span></p> \
+                                      <p class="card-text"><span>Address line2:</span> <span>' + values.fields.city + '</span></p> \
+                                    </div> \
+                                    <span class="edit"> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-trash del-address" data-index="' + values.pk + '"></i></span> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + values.pk + '"></i></span> \
+                                    </span> \
+                                </div>')
+                            $('.lower-block > .first-box > .block2 > .card1').after('<div><button class="select-address1" style="margin:10px;margin-bottom:15px;">1select another address</button></div>')
+                            $('.lower-block > .first-box > .block2 > .all > .card1 > .row' + values.pk + ' ').append(checkbox)
+                            $('.lower-block > .first-box > .block2 > .all > .card1 > .row' + values.pk + ' ').append(edit)
+                        })
+                        $(json.deliveryaddressess.data_table).each(function(index, values){
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','flex')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox > .addressOption').attr('value','' + values.pk + '')
+                            card = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','none')
+
+                            $('.lower-block > .first-box > .block2 > .all').append(
+                                '<div class="card removable-card2 card2" data-index="' + values.pk + '"> \
+                                <div class="row single' + values.pk + '"> \
+                                    <div class="card-body"> \
+                                      <p class="card-text"><span>Fullname2: </span> <span>' + values.fields.full_name + '</span></p> \
+                                      <p class="card-text"><span>Phone: </span> <span>' + values.fields.phone + '</span></p> \
+                                      <p class="card-text"><span>Email:</span> <span class="email-text" data-index="' + values.pk + '">' + values.fields.email + '</span></p> \
+                                      <p class="card-text"><span>Post code:</span> <span>' + values.fields.postal_code + '</span></p> \
+                                      <p class="card-text"><span>Town/city:</span> <span>' + values.fields.address_line1 + '</span></p> \
+                                      <p class="card-text"><span>Address line1:</span> <span>' + values.fields.address_line2 + '</span></p> \
+                                      <p class="card-text"><span>Address line2:</span> <span>' + values.fields.city + '</span></p> \
+                                    </div> \
+                                    <span class="edit"> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-trash del-address" data-index="' + values.pk + '"></i></span> \
+                                        <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + values.pk + '"></i></span> \
+                                    </span> \
+                                </div> \
+                              </div>')
+                            $('.lower-block > .first-box > .block2 > .all > .card2 > .single' + values.pk + ' ').append(card)
+                        })
+
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False'){
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+
+    $('.close:nth-child(3)').on(
+        {click: function(e){
+            if (user_authenticated == 'True'){
+                e.preventDefault();
+                $('.close').css('background','none').css('border','1px solid #CCCCCC').css('color','#746D69').css('border-radius','0')
+                $(this).css('background','var(--normalwhite)').css('border','1px solid var(--normalblack)').css('border-radius','3px')
+
+                $('.wrapper').css('display','none')
+                $('.lower-block').css('display','none')
+                $('#main-container').css('display','block')
+
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:inside_cart' %}",
+                    data: {
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'post'
+                    },
+                    success: function(json){
+                        $('.cart-item-block').remove()
+                        if (json.cart_items.length != 0){
+                            $('#main-container > .main-box > .box').css('height','auto')
+                            $('#main-container > .main-box > .box > p').css('display','none')
+                            $('.total-qty').text(json.total_qty);
+                            $('.total-cost').text('N' + json.total_amt);
+                            $('#delivery-amt').text('N' + json.delivery_amt);
+                            $('#main-container > .main-box > .box > .inside-box > .checkout').css('display','flex')
+
+                            $(json.cart_items).each(function(index, values){
+                                $('.cart-item-dummy').css('display','flex')
+                                $('.cart-item-dummy').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block1 > .innerblock1 > img').attr('src', '/media/' + values.images + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .title').text(values.title)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .price > strike').text(values.price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-1 > .price1').text(values.discount_price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > span').text(values.quantity).attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .second-line > button').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > button:first-child').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .block-2 > button:last-child').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .items-total').attr('data-index', '' + values.id + '')
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .first-line > .items-total').text(values.total_price)
+                                $('.cart-item-dummy > .first-block > .block2 > .innerblock > .second-line > button').attr('value', '' + values.id + '').attr('data-index', '' + values.id + '')
+                                the_clone = $('.cart-item-dummy').clone(true)
+                                the_clone.removeClass('cart-item-dummy')
+                                the_clone.addClass('cart-item-block')
+                                $('.cart-item-dummy').css('display','none')
+                                $('#main-container > .main-box > .box > .inside-box > .body-row').append(the_clone)
+                            })
+                        } else {
+                            $('#main-container > .main-box > .box').css('height','100%')
+                            $('#main-container > .main-box > .box > .inside-box > .checkout').css('display','none')
+                            $('#main-container > .main-box > .box').append('<p>You dont have any product in your cart</p>')
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }
+            else if (user_authenticated == 'False'){
+                $('.login').css('display','flex')
+            }
+        }}
+    )
+
+    $('.del-address').on(
+        {click: function(e){
+        var address_id=$(this).data('index');
+        alert('sooooooooooooot')
+        /* $.ajax({
+          type: "POST",
+          url: '{% url "cart_:cart_update_address" %}',
+          data: {
+            address_id: address_id,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "delete_address",
+          },
+          success: function (json) {
+              $('.card[data-index="'+ address_id +'"]').remove()
+              if (json.address_in_session == 'true'){
+                  $('.select-address1').css('display', 'none')
+                  $('.select-address2').css('display', 'none')
+                  $('.address > .card').slideToggle(1000)
+              }
+              $('.block2 > .messages > .body > span > .text').text('Address with "' + address_id + '" id successfully deleted')
+              $('.block2 > .messages').slideDown(1000)
+          },
+          error: function (xhr, errmsg, err) {},
+        }); */
+
+        }}
+    )
+    $('.select-delivery1').on(
+        {click: function(e){
+            $('.delivery > .card').slideToggle(1000)
+        }}
+    )
+    $('.select-delivery2').on(
+        {click: function(e){
+            $('.delivery > .card').slideToggle(1000)
+        }}
+    )
+    $('.select-address1').on(
+        {click: function(e){
+            $('.address > .card').slideToggle(1000)
+        }}
+    )
+    $('.select-address2').on(
+        {click: function(e){
+            $('.address > .card').slideToggle(1000)
+        }}
+    )
+
+    $('.add-to-qty').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: prod_id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'update'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .block-2 > span[data-index="' + prod_id + '"]').text(json.item_quantity)
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .items-total[data-index="' + prod_id + '"]').text(json.item_total_cost)
+
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('N' + json.sub_total);
+                    $('#final-total').text('N' + json.get_total_cost);
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+
+    $('.subtract-qty').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: $(this).data('index'),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'subtract'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .block-2 > span[data-index="' + prod_id + '"]').text(json.item_quantity)
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .items-total[data-index="' + prod_id + '"]').text(json.item_total_cost)
+
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('$' + json.sub_total);
+                    $('#final-total').text('$' + json.get_total_cost);
+
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+    $('.delete-item').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: $(this).data('index'),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'delete'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('$' + json.sub_total);
+                    $('#final-total').text('$' + json.get_total_cost);
+                    $('.cart-item-block[data-index="'+ prod_id +'"]').remove();
+
+                    if (json.cart_length == 0){
+                        $('#main-container > .main-box > .box').html('<p>You dont have any product in your cart</p>')
+                    }
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+    $('.signUp > .inner > .floor > .main').on(
+        {click: function(e){
+            alert('wwwwwwwwwwwwww')
+            e.preventDefault();
+            $('.signUp').css('display', 'none');
+            $('.login').css('display', 'flex');
+
+        }}
+    )
+
+    $('.login > .inner > .floor > .main').on(
+        {click: function(e){
+            e.preventDefault();
+            $('.login').css('display', 'none');
+            $('.signUp').css('display', 'flex');
+
+        }}
+    )
+
+
+    mydeliveryopt = "{{mydeliveryopt}}"
+    mydeliveryadd = "{{mydeliveryadd}}"
+    $('.pay').on('click', function(e) {
+    //function payWithPaystack(){
+        e.preventDefault();
+        if (mydeliveryopt !=="{}" && mydeliveryadd !=="{}"){
+            var email = "{{mydeliveryadd.email}}"
+            var key = "pk_test_1bd3d130cbb6f84a90e8cdb0e13a82a659ebbedc"
+            var amt = "{{cart.get_total_cost}}"
+            var handler = PaystackPop.setup({
+              key: key,
+              email: email,
+              amount: amt * 100,
+              currency: 'NGN',
+              ref: ''+Math.floor((Math.random() * 1000000000) + 1),
+              callback: function(response) {
+                ref = response.reference
+                $.ajax({
+                    url: "{% url 'checkout_:complete_payment2' %}",
+                    method: 'post',
+                    data: {
+                        ref: response.reference,
+                        amount: '{{cart.get_total_cost}}',
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'post',
+                    },
+                    success: function (response) {
+                      // the transaction status is in response.data.status
+                    }
+
+                });
+              },
+              onClose: function() {
+                alert('Transaction was not completed, window closed.');
+              },
+            });
+            handler.openIframe();
+        }
+        if (mydeliveryopt ==="{}" && mydeliveryadd ==="{}"){
+            alert("you haven't chosen any delivery option & address")
+        }
+        else if (mydeliveryopt ==="{}"){
+            alert("you haven't chosen any delivery option")
+        }
+        else if (mydeliveryadd ==="{}"){
+            alert("you have not chosen an address")
+        }
+    })
+
+</script>
+-->
+
+
+

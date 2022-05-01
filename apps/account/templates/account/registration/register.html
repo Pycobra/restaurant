@@ -1,0 +1,226 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block stylesheet %}{% static 'styles/account/register.css' %}{% endblock %}
+
+
+{% block title %} Register {% endblock %}
+{% block content %}
+<div id="form" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
+    <div id="register">
+        <form class="account-register-form" action="{% url "account_:register" %}" method="post">
+            {% csrf_token %}
+            <h1 class="">Create&nbsp;an&nbsp;account</h1>
+            <div class="input username" >
+                  {{ form.user_name}}
+                  <div class="alert" role="alert" data-index="username">
+                      {% if form.errors %}
+                      {% for field in form %}
+                      {% if field.errors %}
+                      {% if field.label == "Username" %}
+                      <p>{{ field.errors|striptags }}</p>
+                      {% endif %}
+                      {% endif %}
+                      {% endfor %}
+                       {% endif %}
+                  </div>
+            </div>
+            <div class="input email">
+                  {{ form.email}}
+                  <div class="alert" role="alert" data-index="email">
+                      {% if form.errors %}
+                      {% for field in form %}
+                      {% if field.errors %}
+                      {% if field.label == "Email" %}
+                      <p>{ field.errors|striptags }}</p>
+                      {% endif %}
+                      {% endif %}
+                      {% endfor %}
+                      {% endif %}
+                  </div>
+            </div>
+            <div class="input password">
+                  {{ form.password}}
+                  <i class="fa fa-eye-slash"></i>
+                  <div class="alert" role="alert" data-index="password">
+                      {% if form.errors %}
+                      {% for field in form %}
+                      {% if field.errors  %}
+                      {% if field.label == "Password" %}
+                      <p>{{ field.errors|striptags }}</p>
+                      {% endif %}
+                      {% endif %}
+                      {% endfor %}
+                      {% endif %}
+                  </div>
+            </div>
+            <div class="input password2">
+                  {{ form.password2}}
+                  <i class="fa fa-eye-slash"></i>
+                  <div class="alert" role="alert" data-index="password2">
+                      {% if form.errors %}
+                      {% for field in form %}
+                      {% if field.errors %}
+                      {% if field.label == "Password2" %}
+                      <p>{{ field.errors|striptags }}</p>
+                      {% endif %}
+                      {% endif %}
+                      {% endfor %}
+                      {% endif %}
+                  </div>
+            </div>
+            <button class="btn1" type="submit"><i class="fa fa-sign-in" style="font-weight:500;font-size:25px;margin:0 35% 0 10px"></i>Create Account</button>
+            <div class="footer">
+                <span class="terms-condition">By proceeding you agree to our <span style="color:var(--darkblue)">Terms and Conditions</span> and <span style="color:var(--darkblue)">Privacy Policy.</span></span>
+                <span><i class="fa fa-user-circle"></i> Already have an account</span>
+                <span>Sign in <i class="fa fa-caret-right"></i></span>
+
+                <div class="security">
+                    <i class="fa fa-lock"></i>
+                    <div>
+                        <span>Security & Privacy</span>
+                        <div style="margin-top:5px;">Every transaction on NGStoreboy is secure. any personal information given to us willll be handled according to our privacy policy</div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- <div class="body">
+                <div class="header">
+                    <div class="field">
+                        <div class="label"><label>{{ form.user_name.label }}<span>(Required)</span></label></div>
+                        <div class="input">{{ form.user_name }}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label"><label>{{ form.email.label }}<span>(Required)</span></label></div>
+                        <div class="input">{{ form.email }}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label"><label>{{ form.password.label }}<span></span></label></div>
+                        <div class="input">{{ form.password }}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label"><label>{{ form.password2.label }}<span>(Required)</span></label></div>
+                        <div class="input">{{ form.password2 }}</div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <button class="button" type="submit">Register</button>
+                    <p><a href="{% url 'account_:login' %}">Already have an account</a></p>
+                </div>
+            </div> -->
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('input[name="user_name"]').on(
+            {keyup: function(e){
+                e.preventDefault();
+                content = $(this).val()
+                $.ajax({
+                    type:"GET",
+                    url:"{% url 'account_:registration_check' %}",
+                    data: {
+                        content: $(this).val(),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'check_username',
+                    },
+                    success: function(json){
+                        if (json.msg_type == true){
+                            $('#signup-username').css('border-bottom','1px solid green')
+                            $('.alert[data-index="username"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;color:green;">Good <i class="fa fa-check-circle""></i></span>')
+                        }
+                        if (json.msg_type == false){
+                            $('#signup-username').css('border-bottom','1px solid red')
+                            $('.alert[data-index="username"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;">Wrong <i class="fa fa-times-circle" style="color:red;"></i></span>')
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }}
+        )
+
+
+        $('input[name="email"]').on(
+            {keyup: function(e){
+                e.preventDefault();
+                content = $(this).val()
+                $.ajax({
+                    type:"GET",
+                    url:"{% url 'account_:registration_check' %}",
+                    data: {
+                        content: $(this).val(),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'check_email',
+                    },
+                    success: function(json){
+                        if (json.msg_type == true){
+                            $('#signup-email').css('border-bottom','1px solid green')
+                            $('.alert[data-index="email"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;color:green;">Good <i class="fa fa-check-circle""></i></span>')
+                        }
+                        if (json.msg_type == false){
+                            $('#signup-email').css('border-bottom','1px solid red')
+                            $('.alert[data-index="email"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;color:red;">Wrong <i class="fa fa-times-circle""></i></span>')
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }}
+        )
+
+
+        $('input[name="password"]').on(
+            {keyup: function(e){
+                e.preventDefault();
+                $.ajax({
+                    type:"GET",
+                    url:"{% url 'account_:registration_check' %}",
+                    data: {
+                        content: $(this).val(),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'check_password',
+                    },
+                    success: function(json){
+                        if (json.msg_type == true){
+                            $('#signup-pwd').css('border-bottom','1px solid green')
+                            $('.alert[data-index="password"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;color:green;">Strong <i class="fa fa-check-circle""></i></span>')
+                        }
+                        if (json.msg_type == false){
+                            $('#signup-pwd').css('border-bottom','1px solid red')
+                            $('.alert[data-index="password"]').html('<p>' + json.msg + '</p><span style="margin-right:3px;">Weak <i class="fa fa-times-circle" style="color:red;"></i></span>')
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+            }}
+        )
+
+
+
+        $('input[name="password2"]').on(
+            {keyup: function(e){
+                e.preventDefault();
+                content = $(this).val()
+                password = $('input[name="password"]').val()
+                console.log(content)
+                console.log(password)
+                if (content == password){
+                    $('#signup-pwd2').css('border-bottom','1px solid green')
+                    $('.alert[data-index="password2"]').html('<span style="margin-right:3px;color:green;">Matched <i class="fa fa-check-circle""></i></span>')
+                } else {
+                    $('#signup-pwd2').css('border-bottom','1px solid red')
+                    $('.alert[data-index="password2"]').html('<p>password does not match</p><span style="margin-right:3px;">Unmatched <i class="fa fa-times-circle" style="color:red;"></i></span>')
+                }
+            }}
+        )
+
+    </script>
+{% endblock %}

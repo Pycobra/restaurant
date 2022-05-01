@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8">
+    <title>eCommerce</title>
+    <style type="text/css">
+        html {
+            width:100%;
+        }
+        body {
+            width:100%;
+            font-family:Arial;
+            font-size:14px;
+            background-color: #fff;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <table width="100px" cellspacing="0"  cellpadding="0">
+        <tr>
+            <td>New order</td>
+        </tr>
+         <tr>
+             <td>
+                 <h3>Details</h3>
+
+                <b>Name:</b>{{ order_email_vendor.first_name }} {{ order_email_vendor.last_name }}<br>
+                <b>Address:</b>{{ order_email_vendor.address }}<br>
+                <b>Zip and Place:</b>{{ order_email_vendor.zipcode }} {{ order_email_vendor.place }}<br>
+                <b>E-mail:</b>{{ order_email_vendor.email }}<br>
+                <b>Phone:</b>{{ order_email_vendor.phone }}<br>
+             </td>
+        </tr>
+
+        <tr>
+            <td>
+                <h3>Details</h3>
+
+                <table cellspacing="0"  cellpadding="0">
+                    <thead>
+                        <tr>
+                            <td><b>Title</b></td>
+                            <td><b>Price</b></td>
+                            <td><b>Quantity</b></td>
+                            <td><b>Paid</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_email_vendor.items.all %}
+                            {% if item.vendor == vendor_email %}
+                                <tr>
+                                    <td>{{ item.product.title }}</td>
+                                    <td>${{ item.product.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.vendor_paid|yesno:"yes,No" }}</td>
+                                    <td>{{ item.get_total_price }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

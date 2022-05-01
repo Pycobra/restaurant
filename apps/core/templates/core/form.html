@@ -1,0 +1,162 @@
+
+<div id="form">
+    <i class="fa fa-times times"></i>
+    <div id="form-inside">
+        <form method="post" action="." enctype="multipart/form-data" id="add-address-form">
+            {% csrf_token %}
+            <div class="head">
+                <h1>Add address</h1>
+                {% if form.is_valid %}
+                <div class="form-alert" role="alert">Details successfully updated!</div>
+                {% endif %}
+            </div>
+            <div class="block full_name">
+                <div class="input">
+                    <input type="text" name="full_name" class="form-control" placeholder="fullname" maxlength="100" minlength="2" required id="id_full_name">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block city">
+                <div class="input">
+                    <input type="text" name="city" class="form-control" placeholder="city" maxlength="100" minlength="2" required id="id_city">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block email">
+                <div class="input">
+                    <input type="email" name="email" class="form-control" placeholder="email" maxlength="100" minlength="2" required id="id_email">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block phone">
+                <div class="input">
+                    <input type="text" name="phone" class="form-control" placeholder="phone" maxlength="100" minlength="2" required id="id_phone">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block postal_code">
+                <div class="input">
+                    <input type="text" name="postal_code" class="form-control" placeholder="postal_code" maxlength="100" minlength="2" required id="id_postal_code">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block address_line1">
+                <div class="input">
+                    <input type="text" name="address_line1" class="form-control" placeholder="address_line1" maxlength="100" minlength="2" required id="id_address_line1">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block address_line2">
+                <div class="input">
+                    <input type="text" name="address_line2" class="form-control" placeholder="address_line2" maxlength="100" minlength="2" required id="id_address_line2">
+                    <div class="alert" role="alert">
+                        <p>{{ field.errors|striptags }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block block8">
+                <button style="width:100%;" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+{% block scripts %}
+<script>
+    $('.times').on(
+        {click: function(e){
+            $('#form').css('display','none')
+        }}
+    )
+    $('#form > #form-inside > form > .block > button').on(
+        {click: function(e){
+            e.preventDefault();
+            full_name = $('#form > #form-inside > form > .block > .input > input[name=full_name]').val()
+            city = $('#form > #form-inside > form > .block > .input > input[name=city]').val()
+            email = $('#form > #form-inside > form > .block > .input > input[name=email]').val()
+            phone = $('#form > #form-inside > form > .block > .input > input[name=phone]').val()
+            postal_code = $('#form > #form-inside > form > .block > .input > input[name=postal_code]').val()
+            address_line1 = $('#form > #form-inside > form > .block > .input > input[name=address_line1]').val()
+            address_line2 = $('#form > #form-inside > form > .block > .input > input[name=address_line2]').val()
+
+            if (full_name.length == 0){
+                console.log('now')
+                $('#form > #form-inside > form > .full_name > .input > .alert > p').text('this field is required')
+            } if (city.length == 0){
+                $('#form > #form-inside > form > .city > .input > .alert > p').text('this field is required')
+            } if (email.length == 0){
+                $('#form > #form-inside > form > .email > .input > .alert > p').text('this field is required')
+            } if (phone.length == 0){
+                $('#form > #form-inside > form > .phone > .input > .alert > p').text('this field is required')
+            } if (postal_code.length == 0){
+                $('#form > #form-inside > form > .postal_code > .input > .alert > p').text('this field is required')
+            } if (address_line1.length == 0){
+                $('#form > #form-inside > form > .address_line1 > .input > .alert > p').text('this field is required')
+            }
+            $.ajax({
+                type:"POST",
+                url:"{% url 'account_:add_address' %}",
+                data: {
+                    full_name: full_name,
+                    city: city,
+                    email: email,
+                    phone: phone,
+                    postal_code: postal_code,
+                    address_line1: address_line1,
+                    address_line2: address_line2,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'post'
+                },
+                success: function(json){
+                    if (json.null == false){
+                        $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','flex')
+                        $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox > .addressOption').attr('value','' + json.pk + '')
+                        card = $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow > .checkbox').clone(true)
+                        $('.lower-block > .first-box > .block2 > .all > .card2 > .dummyrow').css('display','none')
+
+                        $('.lower-block > .first-box > .block2 > .all').append(
+                            '<div class="card card2" data-index="' + json.pk + '"> \
+                            <div class="row single' + json.pk + '"> \
+                                <div class="card-body"> \
+                                  <p class="card-text"><span>Fullname: </span> <span>' + json.full_name + '</span></p> \
+                                  <p class="card-text"><span>Phone: </span> <span>' + json.phone + '</span></p> \
+                                  <p class="card-text"><span>Email:</span> <span class="email-text" data-index="' + json.pk + '">' + json.email + '</span></p> \
+                                  <p class="card-text"><span>Post code:</span> <span>' + json.postal_code + '</span></p> \
+                                  <p class="card-text"><span>Town/city:</span> <span>' + json.address_line1 + '</span></p> \
+                                  <p class="card-text"><span>Address line1:</span> <span>' + json.address_line2 + '</span></p> \
+                                  <p class="card-text"><span>Address line2:</span> <span>' + json.city + '</span></p> \
+                                </div> \
+                                <span class="edit"> \
+                                    <span class="icon"><i style="font-size:15px;" class="fa fa-trash del-address" data-index="' + json.pk + '"></i></span> \
+                                    <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + json.pk + '"></i></span> \
+                                </span> \
+                            </div> \
+                          </div>')
+                        $('.lower-block > .first-box > .block2 > .all > .card2 > .single' + json.pk + ' ').append(card)
+                        alert('Your new address has been successfully added')
+                    }
+
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+</script>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% load static %}
+<!--fa-bars
+fa-times
+fa-times-rectangle
+fa-times-rectangle-o
+fa-arrow-up
+fa-arrow-down-->
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} MultiVendorSite {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'styles/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
+    <link rel="stylesheet" href="{% block stylesheet %}{% endblock %}">
+    <link rel="stylesheet" href="{% block stylesheet2 %}{% endblock %}">
+    <link rel="stylesheet" href="{% block stylesheet3 %}{% endblock %}">
+    <link rel="stylesheet" href="{% block stylesheet4 %}{% endblock %}">
+    <link rel="stylesheet" href="{% block stylesheet5 %}{% endblock %}">
+    <link rel="stylesheet" href="{% block stylesheet6 %}{% endblock %}">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script type="text/javascript" language="JavaScript" src="{% static 'scripts/jQuery-3.2.1.min.js' %}"></script>
+    <script type="module" defer language="JavaScript" src="{% static 'scripts/main2.js' %}"></script>
+
+</head>
+<body>
+    <main>
+        <header>
+            <section id="section-nav">
+                <nav class="container-fluid" id="nav1">
+                    <div class="place1">
+                        <span>Naija</span>
+                        <span>Cuisines</span>
+                    </div>
+                    <!-- <div class="place2">
+                        {% if request.user.is_authenticated %}
+                        <i class="fa fa-user-circle"></i>
+                        {% else %}
+                         <i class="fa fa-user-circle"></i>
+                        {% endif %}
+                    </div>
+
+                     <ul>
+                        <li class="scroll" data-index="one"><a href="#">Home</a><span class="line1" data-index="one"></span></li>
+                    </ul> -->
+                </nav>
+            </section>
+        </header>
+
+        <section id="section-container">
+            <div id="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </section>
+    </main>
+    <button>play</button>
+
+    <footer>
+        <section class="first-side">
+            <div class="block1" id="inside1">
+                <div class="site-logo">
+                    <span>
+                        <a href="/" class="">
+                            <strong>Naija<br>Cuisines
+                                <span class="cart"><i class="fa fa-shopping-cart"></i><i class="fa fa-star"></i></span>
+                            </strong>
+                        </a>
+                    </span>
+                    <!--<span class="">
+                        <a href="/" class="span"><strong>NGStore<br> Boy<i class="fa fa-shopping-chats"></i></strong></a>
+                    </span>-->
+                </div>
+                <div class="newletter">
+                    <p>NEW TO NGStoreboy?</p>
+                    <p>Subscribe to our newsletter to get updates on our latest offers!</p>
+                    <form method="get" action="">
+                        <div class="search-field">
+                            <div class="field">
+                                <div class="part1">
+                                    <div class="icon"><i class="fa fa-envelope"></i></div>
+                                    <input type="text" placeholder="Enter E-Mail Address" name="query">
+                                </div>
+                                <div class="part2">
+                                    <button class="is-uppercase">Male</button>
+                                    <button class="is-uppercase">Female</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="download-app">
+                    <div class="inner-block1">
+                        <i class="fa fa-shopping-cart"></i>
+                        <div class="first-block1">
+                            <p>DOWNLOAD NGStoreboy FREE APP</p>
+                            <p>Get access to exclusive offers!</p>
+                        </div>
+                    </div>
+                    <div class="inner-block2">
+                        <span class="first-block2">
+                            <i class="fa fa-apple"></i>
+                            <div class="text">
+                                <p>Download&nbsp;on&nbsp;the</p>
+                                <p>App&nbsp;Store</p>
+                            </div>
+                        </span>
+                        <span class="last-block2">
+                            <i class="fa fa-play"></i>
+                            <div class="text">
+                                <p>GET&nbsp;IT&nbsp;ON</p>
+                                <p>Google&nbsp;Play</p>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="second-side">
+            <div class="block2" id="inside2">
+                <div class="about">
+                    <span> ABOUT NGStoreboy</span>
+                    <span> About us</span>
+                    <span> NGStoreboy careers</span>
+                    <span> NGStoreboy Express</span>
+                    <span> Terms and Conditions</span>
+                    <span> Privacy and Cookie Notice</span>
+                    <span> NGStoreboy Prime</span>
+                    <span> NGStoreboy Global</span>
+                    <span> NGStoreboy Black Friday</span>
+                </div>
+                <div class="make-money">
+                    <div class="inner-block1">
+                        <span>MAKE MONEY WITH NGStoreboy</span>
+                        <span>Sell on NGStoreboy</span>
+                        <span>Become a Sales Consultant</span>
+                        <span>Become a NGStoreboy Vendor Service Provider</span>
+                        <span>Become a Logistics Service Partner</span>
+                        <span>Join the NGStoreboy DA Academy</span>
+                        <span>Join the NGStoreboy KOL Program</span>
+                    </div>
+                    <div class="inner-block2">
+                        <span>Lets us fix it</span>
+                        <span>Help center</span>
+                        <span>How to shon on NGStoreboy</span>
+                        <span>Delivery options and timeline</span>
+                        <span>How to return products on NGStoreboy</span>
+                        <span>Coperate and bulk purchase</span>
+                        <span>Report a product</span>
+                        <span>ship your package anywhere in nigeria</span>
+
+
+                    </div>
+                </div>
+                <div class="countries">
+                    <span>NGStoreboy INTERNATIONAL</span>
+                    <div class="names">
+                        <span>Algeria</span>
+                        <span>Egypt</span>
+                        <span>Ghana</span>
+                    </div>
+                </div>
+            </div>
+            <div class="block3" id="inside3">
+                <div class="recognition">
+                    <span>JOin Us On Social Media</span>
+                    <div class="inner-block1">
+                        <span><a class="" href=""><i class="fa fa-cc-mastercard"></i></a></span>
+                        <span><a href=""><i class="fa fa-cc-visa"></i></a></span>
+                        <span><a class="" href=""><i class="fa fa-cc-mastercard"></i></a></span>
+                        <span><a href=""><i class="fa fa-cc-visa"></i></a></span>
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <span>Payment Methods & Delivery Partners</span>
+                    <div class="inner-block1">
+                        <span><a class="" href=""><i class="fa fa-facebook"></i></a></span>
+                        <span><a href=""><i class="fa fa-twitter"></i></a></span>
+                        <span><a href=""><i class="fa fa-instagram"></i></a></span>
+                        <span><a href=""><i class="fa fa-linkedin"></i></a></span>
+                        <span><a href=""><i class="fa fa-snapchat"></i></a></span>
+                        <span><a href=""><i class="fa fa-youtube"></i></a></span>
+                        <span><a href=""><i class="fa fa-youtube-play"></i></a></span>
+                        <span><a href=""><i class="fa fa-spotify"></i></a></span>
+
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </section>
+    </footer>
+
+    {% block scripts %}
+    <script>
+
+    /*const person1 = {"NAME":"MAX"}
+    const person2 = {"NAME":"TREDES"}
+    const personData = new Map([[person1, [{"SEX":"MALE", "Age":12}]]])
+    personData.set(person2, [{"SEX":"FEMALE", "Age":15}])
+    console.log(personData)
+    console.log(personData.get(person2))*/
+    </script>
+    {% endblock %}
+</body>
+</html>
+
+<!--CCCDC6 BBBCB6 ACADA8 746D69-->

@@ -1,0 +1,643 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block stylesheet %}{% static 'styles/cart/cart.css' %}{% endblock %}
+{% block stylesheet2 %}{% static 'styles/breadcrumbs.css' %}{% endblock %}
+
+{% block title %} Cart {% endblock %}
+{% block content %}
+
+<section id="main-container">
+  <div class="main-box">
+      {% if messages %}
+      <div id="pop-notification" class="alert alert-success">
+          <div class="alert alert-success">
+              {% for message in messages %}
+                {{message|safe}}.
+              {% endfor %}
+          </div>
+      </div>
+      {% endif %}
+
+      <h1 class="main-head">Your Cart</h1>
+      <div class="box">
+          {% if cart %}
+          <div class="inside-box">
+              <div class="body-row">
+                  {% for i in cart %}
+                  <div data-index="{{ i.id }}" class="cart-item-block">
+                      <div class="first-block">
+                          <div class="block1">
+                              <div class="innerblock1">
+                                  {% for image in i.product.product_images.all %}
+                                  {% if image.is_main %}
+                                  <img class="" alt="cart image" src="{{ image.images.url }}" alt="{{ image.images.alt_text }}">
+                                  {% endif %}
+                                  {% endfor %}
+                              </div>
+                          </div>
+                          <div class="block2">
+                              <div class="innerblock">
+                                  <div class="first-line">
+                                      <a class="title" href="{% url 'product_:product_detail_' i.product.category.slug i.product.slug %}">{{ i.product.title }}</a>
+                                      <div class="social">
+                                        <button value="{{ i.id }}" data-index="{{ i.id }}" class="subtract-qty" type="button">
+                                            <i style="color:#CCCDC6;" class="fa fa-minus"></i>
+                                        </button>
+                                        <span  data-index="{{ i.id }}" class="item-qty">{{ i.quantity }}</span>
+                                        <button value="{{ i.id }}" data-index="{{ i.id }}" class="add-to-qty" type="button">
+                                            <i class="fa fa-plus-circle"></i>
+                                        </button>
+                                      </div>
+                                  </div>
+                                  <div class="second-line">
+                                      <div>
+                                          <span class="price">N{{i.product.price}}</span>
+                                          <div class="discount_price">
+                                              <span class="price1">N{{i.product.discount_price}}</span>
+                                              <span class="price2" style="color:var(--normalorange);font-size:14px;">saving </span>
+                                              <span class="price3" style="color:var(--normalorange);font-size:14px;">N{{i.discount_amt}}</span>
+                                          </div>
+                                      </div>
+                                      <button value="{{ i.id }}" data-index="{{ i.id }}" class="delete-item" type="button">
+                                          <i class="fa fa-trash"></i>Remove
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="last-block">
+                          <span style="position:absolute;top:20px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                          <span style="position:absolute;top:95px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                          <div class="block1">
+                              <span style="width:100%;font-weight:600;margin-bottom:5px;text-align:center;">{{ i.product.title|slice:":20"  }}</span>
+                              <div class="unit-price">
+                                  <span>Unit Price</span><span data-index="{{ i.id }}" class="price_">N{% if i.product.discount_price %}{{ i.product.discount_price }} {% else %} {{ i.price }} {% endif %}</span>
+                              </div>
+                              <div class="discount">
+                                  <span>Discount</span><span data-index="{{ i.id }}" class="discount_">{% if i.product.discount_price %} N{{ i.discount_percent }}% + {% else %} 0 {% endif %}</span>
+                              </div>
+                              <div class="unit-total">
+                                  <span data-index="{{ i.id }}" class="qty_">Units Total (x{{ i.quantity }})</span><span data-index="{{ i.id }}" class="total_price_">N{{ i.total_price }}</span>
+                              </div>
+                              <div class="subtotal">
+                                  <span>SUBTOTAL</span><span data-index="{{ i.id }}" class="subtotal_">N{{ i.total_price }}</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  {% endfor %}
+
+                  <div class="lower-block">
+                      <div class="first-box">
+                        <div class="block block1">
+
+                            <div class="head">
+                                <span>Delivery Options</span>
+                                <span>Please select your delivery options</span>
+                            </div>
+
+                            <div class="messages">
+                                <div class="body">
+                                    <span>
+                                        <i style="margin-right:5px;" class="fa fa-info"></i>
+                                        <span class="text">Please select a delivery method</span>
+                                    </span>
+                                    <div class="clear-delivery-msg">&times;</div>
+                                </div>
+                            </div>
+                          {% if mydeliveryopt %}
+                          <div class="card card1" data-index="{{mydeliveryopt.id}}">
+                                <div class="row">
+                                    <div class="place1">
+                                        <div class="icon">
+                                            <i class="fa fa-car"></i>
+                                        </div>
+                                        <div class="card-body">
+                                          <p class="card-text">{{mydeliveryopt.delivery_name}}</p>
+                                          <p class="card-text"><span>Your order should be delivered within</span> <span>{{mydeliveryopt.delivery_timeframe}}</span></p>
+                                          <p class="card-text"><span>delivery region</span> <span>{{mydeliveryopt.delivery_region}}</span></p>
+                                          <p class="card-text"><span>delivery method</span> <span>{{mydeliveryopt.delivery_method}}</span></p>
+                                          <p class="card-text"><span>delivery window</span> <span>{{mydeliveryopt.delivery_window}}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="checkbox">
+                                        <input class="deliveryOption" type="radio" name="deliveryOption" value="{{mydeliveryopt.id}}">
+                                    </div>
+                                    <!--<span class="edit">
+                                        <span class="icon"><i class="fa fa-trash"></i></span>
+                                        <span class="icon"><i class="fa fa-pencil"></i></span>
+                                    </span>-->
+                                </div>
+                            </div>
+                            <div><button class="select-delivery1" style="margin:10px;margin-bottom:15px;">select another delivery method</button></div>
+                          {% endif %}
+                          <div><button class="select-delivery2" style="display:none;margin:10px;margin-bottom:15px;">select another delivery method</button></div>
+
+                          <div class="all delivery">
+                          {% for deliveries in deliveryoptions %}
+                          {% if deliveries.is_active %}
+                          <div class="card card2" {% if mydeliveryopt %} style="display:none" {% endif %} data-index="{{deliveries.id}}">
+                            <div class="row">
+                                <div class="place1">
+                                    <div class="icon">
+                                      <i class="fa fa-car"></i>
+                                    </div>
+                                    <div class="card-body">
+                                      <p class="card-text">{{deliveries.delivery_name}}</p>
+                                      <p class="card-text"><span>Your order should be delivered within</span> <span>{{deliveries.delivery_timeframe}}</span></p>
+                                      <p class="card-text"><span>delivery region</span> <span>{{deliveries.delivery_region}}</span></p>
+                                      <p class="card-text"><span>delivery method</span> <span>{{deliveries.delivery_method}}</span></p>
+                                      <p class="card-text"><span>delivery window</span> <span>{{deliveries.delivery_window}}</span></p>
+                                    </div>
+                                </div>
+                              <div class="checkbox">
+                                <input class="deliveryOption" type="radio" name="deliveryOption" value="{{deliveries.id}}">
+                              </div>
+                                <!--<span class="edit">
+                                    <span class="icon"><i class="fa fa-trash"></i></span>
+                                    <span class="icon"><i class="fa fa-pencil"></i></span>
+                                </span>-->
+                            </div>
+                          </div>
+                          {% endif %}
+                          {% endfor %}
+                          </div>
+                        </div>
+
+                        <div class="block block2">
+                            <div class="head">
+                                <span>Delivery Address</span>
+                                <span>Please select your delivery address</span>
+                            </div>
+                            <div class="messages">
+                                <div class="body">
+                                    <span style="display:flex;flex-wrap:no-wrap;">
+                                        <i style="margin-right:5px;" class="fa fa-info"></i>
+                                        <span class="text">Please select a delivery address</span>
+                                    </span>
+                                    <div class="clear-address-msg">&times;</div>
+                                </div>
+                            </div>
+                          {% if mydeliveryadd %}
+                          <!-- <input class="email-input" type="hidden" value="{{mydeliveryadd.email}}">
+                          <input class="address-id" type="hidden" value="{{mydeliveryadd.id}}">
+                          <input class="delivery-id" type="hidden" value="{{mydeliveryopt.id}}"> -->
+                          <div class="card card1" data-index="{{mydeliveryadd.id}}">
+                                <div class="row">
+                                    <div class="card-body">
+                                      <p class="card-text"><span>Fullname: </span> <span>{{mydeliveryadd.full_name}}</span></p>
+                                      <p class="card-text"><span>Phone: </span> <span>{{mydeliveryadd.phone}}</span></p>
+                                      <p class="card-text"><span>Email2:</span> <span class="email-text" data-index="{{mydeliveryadd.id}}">{{mydeliveryadd.email}}</span></p>
+                                      <p class="card-text"><span>Post code:</span> <span>{{mydeliveryadd.postal_code}}</span></p>
+                                      <p class="card-text"><span>Town/city:</span> <span>{{mydeliveryadd.address_line1}}</span></p>
+                                      <p class="card-text"><span>Address line1:</span> <span>{{mydeliveryadd.address_line2}}</span></p>
+                                      <p class="card-text"><span>Address line2:</span> <span>{{mydeliveryadd.city}}</span></p>
+                                      <span class="edit"><i class="fa fa-pencil"></i> <i class="fa fa-pencil"></i></span>
+                                    </div>
+                                    <div class="checkbox">
+                                      <input  class="addressOption" type="radio" name="addressOption" value="{{mydeliveryadd.id}}">
+                                    </div>
+                                    <span class="edit">
+                                        <span class="icon"><i class="fa fa-trash" data-index="{{mydeliveryadd.id}}"></i></span>
+                                        <span class="icon"><i class="fa fa-pencil" data-index="{{mydeliveryadd.id}}"></i></span>
+                                    </span>
+                                </div>
+                          </div>
+                          <div><button class="select-address1" style="{% if deliveryaddressess.count == 0 %}display:none;{% endif %} margin:10px;margin-bottom:15px;">1select another address</button></div>
+                          {% endif %}
+                          <div><button class="select-address2" style="display:none;margin:10px;margin-bottom:15px;">2select another address</button></div>
+
+                          <div class="all address">
+                          {% if deliveryaddressess %}
+                          {% for addressess in deliveryaddressess %}
+                          <div class="card card2" {% if mydeliveryadd %} style="display:none" {% endif %} data-index="{{addressess.id}}">
+                            <div class="row">
+                                <div class="card-body">
+                                  <p class="card-text"><span>Fullname: </span> <span>{{addressess.full_name}}</span></p>
+                                  <p class="card-text"><span>Phone: </span> <span>{{addressess.phone}}</span></p>
+                                  <p class="card-text"><span>Email5:</span> <span class="email-text" data-index="{{addressess.id}}">{{addressess.email}}</span></p>
+                                  <p class="card-text"><span>Post code:</span> <span>{{addressess.postal_code}}</span></p>
+                                  <p class="card-text"><span>Town/city:</span> <span>{{addressess.address_line1}}</span></p>
+                                  <p class="card-text"><span>Address line1:</span> <span>{{addressess.address_line2}}</span></p>
+                                  <p class="card-text"><span>Address line2:</span> <span>{{addressess.town_city}}</span></p>
+                                </div>
+                              <div class="checkbox">
+                                <input class="addressOption" type="radio" name=addressOption" value="{{addressess.id}}">
+                              </div>
+                                <span class="edit">
+                                    <span class="icon"><i class="fa fa-trash del-address" data-index="{{addressess.id}}"></i></span>
+                                    <span class="icon"><i class="fa fa-pencil" data-index="{{addressess.id}}"></i></span>
+                                </span>
+                            </div>
+                          </div>
+                          {% endfor %}
+                          {% endif %}
+                          </div>
+                            <div class=" card3">
+                            <a href="{% url 'account_:add_address' %}">
+                                <div class="row">
+                                      <i class="fa fa-plus"></i><span>Add address</span>
+                                </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="checkout">
+                          <div class="box">
+                              <span style="position:absolute;top:30px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                              <span style="position:absolute;top:143px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                              <div class="block1">
+                                  <span style="width:100%;font-weight:600;text-align:center;">ORDER SUMMARY</span>
+                                  <div class="unit-price">
+                                      <span>Total quantity</span><span class="total-qty">{{ cart|length }}</span>
+                                  </div>
+                                  <div class="discount">
+                                      <span>Total Price</span><span class="total-cost">N{{cart.get_subtotal_cost}}</span>
+                                  </div>
+                                  <div class="discount">
+                                      <span>Estimated Tax</span><span>0</span>
+                                  </div>
+                                  <div class="unit-total">
+                                      <span>Delivery Fee</span><span id="delivery-amt">{{cart.get_delivery_price}}</span>
+                                  </div>
+                                  <div class="total">
+                                      <span>FINAL TOTAL</span><span id="final-total">N{{ cart.get_total_cost }}</span>
+                                  </div>
+                              </div>
+                              <form>
+                                  <button class="pay">Pay now</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+          <div class="">
+              <div class="">
+                <a role="button" href="{% url 'checkout_:delivery_choice' %}" class="btn btn-success fw-bold" type="button">Checkout Securely</a>
+                <button class="btn btn-light" type="button">Save for later</button>
+              </div>
+          </div>
+          {% else %}
+            <p>You dont have any product in your cart</p>
+          {% endif %}
+      </div>
+
+
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="https://js.stripe.com/v3/"></script> -->
+    <script>
+    $(document).ready(function(){
+        $('.add-to-qty').on(
+            {click: function(e){
+                e.preventDefault();
+                var prod_id=$(this).data('index');
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:cart_detail' %}",
+                    data: {
+                        productID: $(this).data('index'),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        mainAction: 'post',
+                        subAction: 'update'
+                    },
+                    success: function(json){
+                        $("a > .cart > .qty").text(json.cart_length);
+                        $('.item-qty[data-index="'+ prod_id +'"]').text(json.item_quantity);
+                        $('.unit-total > .qty_[data-index="'+ prod_id +'"]').text('Units Total ' + '(x' + json.item_quantity + ')')
+                        $('.unit-total > .total_price_[data-index="'+ prod_id +'"]').text(json.item_total_cost);
+                        $('.subtotal > .subtotal_[data-index="'+ prod_id +'"]').text('$' + json.item_total_cost);
+
+                        $('.total-qty').text('$' + json.cart_length);
+                        $('.total-cost').text('$' + json.sub_total);
+                        $('#final-total').text('$' + json.get_total_cost);
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+
+            }}
+        )
+
+        $('.subtract-qty').on(
+            {click: function(e){
+                e.preventDefault();
+                var prod_id=$(this).data('index');
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:cart_detail' %}",
+                    data: {
+                        productID: $(this).data('index'),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        mainAction: 'post',
+                        subAction: 'subtract'
+                    },
+                    success: function(json){
+                        $("a > .cart > .qty").text(json.cart_length);
+                        $('.item-qty[data-index="'+ prod_id +'"]').text(json.item_quantity);
+                        $('.unit-total > .qty_[data-index="'+ prod_id +'"]').text('Units Total ' + '(x' + json.item_quantity + ')')
+                        $('.unit-total > .total_price_[data-index="'+ prod_id +'"]').text(json.item_total_cost);
+                        $('.subtotal > .subtotal_[data-index="'+ prod_id +'"]').text('$' + json.item_total_cost);
+
+                        $('.total-qty').text('$' + json.cart_length);
+                        $('.total-cost').text('$' + json.sub_total);
+                        $('#final-total').text('$' + json.get_total_cost);
+
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+
+            }}
+        )
+
+        $('.delete-item').on(
+            {click: function(e){
+                e.preventDefault();
+                var prod_id=$(this).data('index');
+                $.ajax({
+                    type:"POST",
+                    url:"{% url 'cart_:cart_detail' %}",
+                    data: {
+                        productID: $(this).data('index'),
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        mainAction: 'post',
+                        subAction: 'delete'
+                    },
+                    success: function(json){
+                        $("a > .cart > .qty").text(json.cart_length);
+                        $('.total-qty').text('$' + json.cart_length);
+                        $('.total-cost').text('$' + json.sub_total);
+                        $('#final-total').text('$' + json.get_total_cost);
+                        $('.cart-item-block[data-index="'+ prod_id +'"]').remove();
+
+                        if (json.cart_length == 0){
+                            $('.total').remove();
+                            $('.box').html('<p>You dont have any product in your cart</p>');
+                        };
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log('completed with error');
+                    }
+                });
+
+            }}
+        )
+
+
+
+        // $('.delivery').css('display','none')
+        // $('.address > .card2').css('display','none')
+
+        $('.del-address').on(
+            {click: function(e){
+            var address_id=$(this).data('index');
+            $.ajax({
+              type: "POST",
+              url: '{% url "cart_:cart_update_address" %}',
+              data: {
+                address_id: address_id,
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: "delete_address",
+              },
+              success: function (json) {
+                  $('.card[data-index="'+ address_id +'"]').remove()
+                  if (json.address_in_session == 'true'){
+                      $('.select-address1').css('display', 'none')
+                      $('.select-address2').css('display', 'none')
+                      $('.address > .card').slideToggle(1000)
+                  }
+                  $('.block2 > .messages > .body > span > .text').text('Address with "' + address_id + '" id successfully deleted')
+                  $('.block2 > .messages').slideDown(1000)
+              },
+              error: function (xhr, errmsg, err) {},
+            });
+
+            }}
+        )
+        $('.select-delivery1').on(
+            {click: function(e){
+                $('.delivery > .card').slideToggle(1000)
+            }}
+        )
+        $('.select-delivery2').on(
+            {click: function(e){
+                $('.delivery > .card').slideToggle(1000)
+            }}
+        )
+        $('.select-address1').on(
+            {click: function(e){
+                $('.address > .card').slideToggle(1000)
+            }}
+        )
+        $('.select-address2').on(
+            {click: function(e){
+                $('.address > .card').slideToggle(1000)
+            }}
+        )
+        $('.clear-delivery-msg').on(
+            {click: function(e){
+                $('.block1 > .messages').slideUp(500)
+            }}
+        )
+        $('.clear-address-msg').on(
+            {click: function(e){
+                $('.block2 > .messages').slideUp(500)
+            }}
+        )
+
+      mydeliveryopt = "{{mydeliveryopt}}"
+      mydeliveryadd = "{{mydeliveryadd}}"
+
+      $('input[type=radio][name=deliveryOption]').each(function(index, values){
+          $('input[type=radio][name=deliveryOption]').attr("checked",false)
+      });
+      $('input[type=radio][name=deliveryOption]').on('change', function(e) {
+        e.preventDefault();
+        var deliveryoption=$(this).val();
+        $.ajax({
+          type: "POST",
+          url: '{% url "checkout_:cart_update_delivery" %}',
+          data: {
+            deliveryoption: deliveryoption,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "post",
+          },
+          success: function (json) {
+            document.getElementById("final-total").innerHTML = json.total;
+            document.getElementById("delivery-amt").innerHTML = json.delivery_price;
+
+            $('.block1 > .messages').remove()
+            main_delivery = $('.card[data-index="'+ deliveryoption +'"]').clone(true)
+            $('.card[data-index="'+ deliveryoption +'"]').remove()
+            main_delivery.insertAfter('.lower-block > .first-box > .block1 > .head')
+            $(this).attr("checked",true);
+
+            select_btn = $('.select-delivery2').clone(true)
+            $('.select-delivery1').remove()
+            $('.select-delivery2').remove()
+            select_btn.css("display","block")
+            select_btn.insertAfter(main_delivery)
+
+            //$('.card').removeAttr('id');
+            //main_delivery.attr('id','d-main')
+            //var main_delivery = document.getElementById("d-main");
+            if (mydeliveryopt ==="{}"){
+                /*main_delivery.insertAdjacentHTML('afterend',
+                                    '<div><button class="select-delivery" \
+                                     style="margin:10px;margin-bottom:15px;">\
+                                     select another delivery method</button></div>')*/
+            }
+
+          },
+          error: function (xhr, errmsg, err) {},
+        });
+
+      });
+
+      $('.addressOption').on('click', function(e) {
+        e.preventDefault();
+        var address_id=$(this).val();
+        $.ajax({
+          type: "POST",
+          /*url: '{% url 'account_:set_default' %}',*/
+          url: '{% url "cart_:cart_update_address" %}',
+          data: {
+            address_id: address_id,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "post",
+          },
+          success: function (json) {
+
+            $('.block2 > .messages').remove()
+            main_address = $('.card[data-index="'+ address_id +'"]').clone(true)
+            $('.card[data-index="'+ address_id +'"]').remove()
+            main_address.insertAfter('.lower-block > .first-box > .block2 > .head')
+            $(this).attr("checked",true);
+
+            select_btn = $('.select-address2').clone(true)
+            $('.select-address1').remove()
+            $('.select-address2').remove()
+            select_btn.css("display","block")
+            select_btn.insertAfter(main_address)
+            $('.email-input').val() = $('.email-text[data-index="'+ address_id +'"]').text()
+            if (mydeliveryadd ==="{}"){
+                /*main_address.insertAdjacentHTML('afterend',
+                                    '<div><button class="select-delivery" \
+                                     style="margin:10px;margin-bottom:15px;">\
+                                     select another delivery method</button></div>')*/
+            }
+          },
+          error: function (xhr, errmsg, err) {},
+        });
+      });
+    });
+
+      //var paymentForm = document.getElementById('paymentForm');
+      //paymentForm.addEventListener('submit', payWithPaystack, false);
+    //Object { reference: "330589884", trans: "1581848720", status: "success", message: "Approved", transaction: "1581848720", trxref: "330589884" }
+
+    $('.pay').on('click', function(e) {
+    //function payWithPaystack(){
+        e.preventDefault();
+        if (mydeliveryopt !=="{}" && mydeliveryadd !=="{}"){
+            var email = "{{mydeliveryadd.email}}"
+            //var address = $('.address-id').val()
+            //var delivery = $('.delivery-id').val()
+            var key = "pk_test_1bd3d130cbb6f84a90e8cdb0e13a82a659ebbedc"
+            var amt = "{{cart.get_total_cost}}"
+            console.log("===========================1")
+            console.log(email)
+            console.log(amt)
+            console.log(key)
+            console.log("===========================2")
+            var handler = PaystackPop.setup({
+              key: key,
+              email: email,
+              amount: amt * 100,
+              currency: 'NGN',
+              ref: ''+Math.floor((Math.random() * 1000000000) + 1),
+              callback: function(response) {
+
+                //let message = 'Payment complete! Reference: ' + response.reference;
+                //alert(message);
+                console.log("------------------------------")
+                console.log(response)
+                console.log("------------------------------")
+                ref = response.reference
+                $.ajax({
+                    url: "{% url 'checkout_:complete_payment2' %}",
+                    method: 'post',
+                    data: {
+                        ref: response.reference,
+                        //address_id:address,
+                        //delivery_id:delivery,
+                        amount: '{{cart.get_total_cost}}',
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'post',
+                    },
+                    success: function (response) {
+                      // the transaction status is in response.data.status
+                    }
+
+                });
+              },
+              onClose: function() {
+                alert('Transaction was not completed, window closed.');
+              },
+            });
+            handler.openIframe();
+        }
+        if (mydeliveryopt ==="{}" && mydeliveryadd ==="{}"){
+            console.log('not delivering and not addressing')
+            $('.block1 > .messages').slideDown(1000)
+            $('.block2 > .messages').slideDown(1000)
+        }
+        else if (mydeliveryopt ==="{}"){
+            console.log('not delivering')
+            $('.block1 > .messages').slideDown(1000)
+        }
+        else if (mydeliveryadd ==="{}"){
+            console.log('not addressing')
+            $('.block2 > .messages').slideDown(1000)
+        }
+    })
+
+    /*
+    var stripe = Stripe['{{ stripe_pub_key }}'];
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element')
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        stripe.createToken(card).then(function(result) {
+            if (result.error) {
+                var errorElement = document.getElementById('card-errors')
+                errorElement.textContent = result.error.message;
+            } else {
+                stripeTokenHandler(result.token);
+            }
+        });
+    });
+
+    function stripeTokenHandler(token) {
+        var form = document.getElementById('payment-form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type','hidden');
+        hiddenInput.setAttribute('name','stripe_token');
+        hiddenInput.setAttribute('value',token.id);
+        form.appendChild(hiddenInput);
+        form.submit();
+    } */
+    </script>
+{% endblock %}
+

@@ -1,0 +1,20 @@
+PasswordResetTokenGenerator = lasts 4 7days but can be changed in settings
+Password_Reset_Timeout = 4days 
+see PasswordResetTokenGenerator doc
+
+'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+firstly convert user.pk to bytes then to base64_encode so we can use in url
+
+this makes an info from db prepopulate a form 
+user_form = UserEditForm(instance=request.user)
+
+use this when rendering htmlform 
+<input class="input" type="email" name="email" id="id_email" value="{{ edit_vendor.created_by.email }}">
+request.POST.get('store_name', '')
+
+use this when rendering python form 
+<div class="input">{{ form.store_name }}</div>
+form.cleaned_data['store_name']
+
+make users put email before any edit 
+make users delete acc,store

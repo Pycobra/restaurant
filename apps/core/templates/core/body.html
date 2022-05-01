@@ -1,0 +1,471 @@
+
+<div class="body">
+  <div class="head-pic"><img></div>
+  <div class="wrapper">
+      <div class="dummy" data-index="dummy">
+      </div>
+  </div>
+
+  <div class="lower-block">
+      <div class="first-box">
+        <div class="block block1">
+            <div class="head">
+                <span>Delivery Options</span>
+                <span>Please select your delivery options</span>
+            </div>
+            <div class="messages">
+                <div class="body">
+                    <span>
+                        <i style="margin-right:5px;" class="fa fa-info"></i>
+                        <span class="text">Please select a delivery method</span>
+                    </span>
+                    <div class="clear-delivery-msg">&times;</div>
+                </div>
+            </div>
+            <div class="card card1">
+            </div>
+
+            <div><button class="select-delivery2" style="display:none;margin:10px;margin-bottom:15px;">select another delivery method</button></div>
+
+          <div class="all delivery">
+          <div class="card card2" {% if mydeliveryopt %} style="display:none" {% endif %} data-index="{{deliveries.id}}">
+            <div class="row dummyrow">
+              <div class="checkbox">
+                <input class="deliveryOption" type="radio" name="deliveryOption" value="{{deliveries.id}}">
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="block block2">
+            <div class="head">
+                <span>Delivery Address</span>
+                <span>Please select your delivery address</span>
+            </div>
+            <div class="messages">
+                <div class="body">
+                    <span style="display:flex;flex-wrap:no-wrap;">
+                        <i style="margin-right:5px;" class="fa fa-info"></i>
+                        <span class="text">Please select a delivery address</span>
+                    </span>
+                    <div class="clear-address-msg">&times;</div>
+                </div>
+            </div>
+            <div class="card card1">
+            </div>
+
+          <div><button class="select-address2" style="display:none;margin:10px;margin-bottom:15px;">2select another address</button></div>
+
+          <div class="all address">
+              <div class="card card2" style="display:none" data-index="">
+                <div class="row dummyrow">
+                  <div class="checkbox">
+                    <input class="addressOption" type="radio" name="addressOption" value="">
+                  </div>
+                    <span class="edit">
+                        <span class="icon"><i style="font-size:15px;" class="fa fa-trash" data-index="' + values.pk + '"></i></span>
+                        <span class="icon"><i style="font-size:15px;" class="fa fa-pencil" data-index="' + values.pk + '"></i></span>
+                    </span>
+                </div>
+              </div>
+          </div>
+          <div class="card3">
+            <a href="{% url 'account_:add_address' %}">
+                <div class="row">
+                      <i class="fa fa-plus"></i><span>Add address</span>
+                </div>
+            </a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <section id="main-container">
+      <div class="main-box">
+          <!-- <h1 class="main-head">Your Cart</h1> -->
+          <div class="box">
+              <div class="inside-box">
+                  <div class="body-row">
+                      <div data-index="{{ i.id }}" class="cart-item-dummy" style="display:none;">
+                          <div class="first-block">
+                              <div class="block1">
+                                  <div class="innerblock1">
+                                      <img class="" alt="cart image">
+                                  </div>
+                              </div>
+                              <span style="border-right:2px solid var(--lightgrey);height:100%;"></span>
+                              <div class="block2">
+                                  <div class="innerblock">
+                                      <div class="first-line">
+                                          <div class="block-1">
+                                              <span class="title" href=""></span>
+                                              <span class="price"><strike></strike></span>
+                                              <span class="price1"></span>
+                                          </div>
+                                          <div class="block-2">
+                                            <button value="{{ i.id }}" data-index="{{ i.id }}" class="subtract-qty" type="button">
+                                                <i style="color:#CCCDC6;" class="fa fa-minus"></i>
+                                            </button>
+                                            <span data-index="{{ i.id }}" class="item-qty" style="width:15vw;"></span>
+                                            <button value="{{ i.id }}" data-index="{{ i.id }}" class="add-to-qty" type="button">
+                                                <i class="fa fa-plus-circle"></i>
+                                            </button>
+                                          </div>
+                                          <div class="items-total"  style="width:9vw;"></div>
+                                      </div>
+
+                                      <div class="second-line">
+                                          <button value="{{ i.id }}" data-index="{{ i.id }}" class="delete-item" type="button">
+                                              <i class="fa fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="checkout">
+                      <div class="box">
+                          <span style="position:absolute;top:30px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                          <span style="position:absolute;top:143px;left:0;width:100%;height:1px;background-color:#BBBCB6;"></span>
+                          <div class="block1">
+                              <span style="width:100%;font-weight:600;text-align:center;">ORDER SUMMARY</span>
+                              <div class="unit-price">
+                                  <span>Total quantity</span><span class="total-qty">{{ cart|length }}</span>
+                              </div>
+                              <div class="discount">
+                                  <span>Total Price</span><span class="total-cost">N{{cart.get_subtotal_cost}}</span>
+                              </div>
+                              <div class="discount">
+                                  <span>Estimated Tax</span><span>0</span>
+                              </div>
+                              <div class="unit-total">
+                                  <span>Delivery Fee</span><span id="delivery-amt">{{cart.get_delivery_price}}</span>
+                              </div>
+                              <div class="total">
+                                  <span>FINAL TOTAL</span><span id="final-total">N{{ cart.get_total_cost }}</span>
+                              </div>
+                          </div>
+                          <form>
+                              <button class="pay">Pay now</button>
+                          </form>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+
+
+      </div>
+    </section>
+</div>
+
+
+
+{% block scripts %}
+<script>
+    $('.dummy').on(
+        {click: function(e){
+            e.preventDefault();
+            var id =$(this).attr('data-index');
+            $.ajax({
+                type:"POST",
+                url:" {% url 'product_:single_product' %}",
+                data: {
+                    id: id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'post'
+                },
+                success: function(json){
+                    $('.top > .top-wrapper > .ingredient > div').remove()
+                    $('.dummy > .left').css('background-color','var(--normalwhite)').css('padding','0').css('border-radius','0')
+                    //$('.dummy > .left > .fa-caret-left').css('display','none')
+
+                    $('.dummy[data-index="' + id + '"] > .left').css('background-color','#CCCDC6')
+                    $('.dummy[data-index="' + id + '"] > .left').css('padding','5px').css('border-radius','3px')
+                    //$('.dummy[data-index="' + id + '"] > .left > .fa-caret-left').css('display','block')
+                    $(json.place.table).each(function(index, values){
+                        ingredient = values.fields.ingredient.split(",")
+                        for (let i=0; i < ingredient.length; i++){
+                            $('.option-choice[data-index="dummy"] > .inner > .top > .top-wrapper > .ingredient').append('<div><input type="checkbox"><span>' + ingredient[i] + '</span></div>')
+                        }
+                        $('.option-choice[data-index="dummy"] > .inner > .bottom > button').attr('data-index','' + values.pk + '')
+                        $('.option-choice[data-index="dummy"] > .inner > .top > .img-place > img').attr('src','/media/' + values.fields.images + '')
+                        $('.option-choice[data-index="dummy"]').css('display','flex')
+                    })
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+
+    $('.lower-block > .first-box > .block2 > .card3').on(
+        {click: function(e){
+            e.preventDefault();
+            var id =$(this).attr('data-index');
+            $('#form').css('display','flex')
+            /*$.ajax({
+                type:"POST",
+                url:"{% url 'account_:add_address' %}",
+                data: {
+                    action: 'post',
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(json){
+                    console.log(json)
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            })*/
+        }}
+    )
+
+      $('input[type=radio][name=deliveryOption]').on('change', function(e) {
+        e.preventDefault();
+        var deliveryoption=$(this).val();
+        $.ajax({
+          type: "POST",
+          url: '{% url "checkout_:cart_update_delivery" %}',
+          data: {
+            deliveryoption: deliveryoption,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "post",
+          },
+          success: function (json) {
+            //document.getElementById("final-total").innerHTML = json.total;
+            //document.getElementById("delivery-amt").innerHTML = json.delivery_price;
+
+            $('.block1 > .messages').remove()
+            main_delivery = $('.card[data-index="'+ deliveryoption +'"]').clone(true)
+            $('.card[data-index="'+ deliveryoption +'"]').remove()
+            main_delivery.insertAfter('.lower-block > .first-box > .block1 > .head')
+            $(this).attr("checked",true);
+
+            select_btn = $('.select-delivery2').clone(true)
+            $('.select-delivery1').remove()
+            $('.select-delivery2').remove()
+            select_btn.css("display","block")
+            select_btn.insertAfter(main_delivery)
+            alert('You chose a new delivery option')
+          },
+          error: function (xhr, errmsg, err) {},
+        });
+
+      });
+
+      $('.addressOption').on('click', function(e) {
+        e.preventDefault();
+        var address_id=$(this).val();
+        $.ajax({
+          type: "POST",
+          /*url: '{% url 'account_:set_default' %}',*/
+          url: '{% url "cart_:cart_update_address" %}',
+          data: {
+            address_id: address_id,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "post",
+          },
+          success: function (json) {
+            $('.block2 > .messages').remove()
+            main_address = $('.card[data-index="'+ address_id +'"]').clone(true)
+            $('.card[data-index="'+ address_id +'"]').remove()
+            main_address.insertAfter('.lower-block > .first-box > .block2 > .head')
+            $(this).attr("checked",true);
+
+            select_btn = $('.select-address2').clone(true)
+            $('.select-address1').remove()
+            $('.select-address2').remove()
+            select_btn.css("display","block")
+            select_btn.insertAfter(main_address)
+          },
+          error: function (xhr, errmsg, err) {},
+        });
+      });
+
+    $('.del-address').on(
+        {click: function(e){
+        var address_id=$(this).data('index');
+        /* $.ajax({
+          type: "POST",
+          url: '{% url "cart_:cart_update_address" %}',
+          data: {
+            address_id: address_id,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            action: "delete_address",
+          },
+          success: function (json) {
+              $('.card[data-index="'+ address_id +'"]').remove()
+              if (json.address_in_session == 'true'){
+                  $('.select-address1').css('display', 'none')
+                  $('.select-address2').css('display', 'none')
+                  $('.address > .card').slideToggle(1000)
+              }
+              $('.block2 > .messages > .body > span > .text').text('Address with "' + address_id + '" id successfully deleted')
+              $('.block2 > .messages').slideDown(1000)
+          },
+          error: function (xhr, errmsg, err) {},
+        }); */
+
+        }}
+    )
+
+    $('.select-delivery1').on(
+        {click: function(e){
+            $('.delivery > .card').slideToggle(1000)
+        }}
+    )
+    $('.select-delivery2').on(
+        {click: function(e){
+            $('.delivery > .card').slideToggle(1000)
+        }}
+    )
+
+
+    $('.add-to-qty').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: prod_id,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'update'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .block-2 > span[data-index="' + prod_id + '"]').text(json.item_quantity)
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .items-total[data-index="' + prod_id + '"]').text(json.item_total_cost)
+
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('N' + json.sub_total);
+                    $('#final-total').text('N' + json.get_total_cost);
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+        }}
+    )
+
+    $('.subtract-qty').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: $(this).data('index'),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'subtract'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .block-2 > span[data-index="' + prod_id + '"]').text(json.item_quantity)
+                    $('.cart-item-block > .first-block > .block2 > .innerblock > .first-line > .items-total[data-index="' + prod_id + '"]').text(json.item_total_cost)
+
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('$' + json.sub_total);
+                    $('#final-total').text('$' + json.get_total_cost);
+
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+
+    $('.delete-item').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productID: $(this).data('index'),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'delete'
+                },
+                success: function(json){
+                    $(".close:nth-child(3) > a > .cart-place > .qty").text(json.cart_length);
+                    $('.total-qty').text(json.cart_length);
+                    $('.total-cost').text('$' + json.sub_total);
+                    $('#final-total').text('$' + json.get_total_cost);
+                    $('.cart-item-block[data-index="'+ prod_id +'"]').remove();
+
+                    if (json.cart_length == 0){
+                        $('#main-container > .main-box > .box').html('<p>You dont have any product in your cart</p>')
+                    }
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+    mydeliveryopt = "{{mydeliveryopt}}"
+    mydeliveryadd = "{{mydeliveryadd}}"
+    $('.pay').on('click', function(e) {
+    //function payWithPaystack(){
+        e.preventDefault();
+        if (mydeliveryopt !=="{}" && mydeliveryadd !=="{}"){
+            var email = "{{mydeliveryadd.email}}"
+            var key = "pk_test_1bd3d130cbb6f84a90e8cdb0e13a82a659ebbedc"
+            var amt = "{{cart.get_total_cost}}"
+            var handler = PaystackPop.setup({
+              key: key,
+              email: email,
+              amount: amt * 100,
+              currency: 'NGN',
+              ref: ''+Math.floor((Math.random() * 1000000000) + 1),
+              callback: function(response) {
+                ref = response.reference
+                $.ajax({
+                    url: "{% url 'checkout_:complete_payment2' %}",
+                    method: 'post',
+                    data: {
+                        ref: response.reference,
+                        amount: '{{cart.get_total_cost}}',
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        action: 'post',
+                    },
+                    success: function (response) {
+                      // the transaction status is in response.data.status
+                    }
+
+                });
+              },
+              onClose: function() {
+                alert('Transaction was not completed, window closed.');
+              },
+            });
+            handler.openIframe();
+        }
+        if (mydeliveryopt ==="{}" && mydeliveryadd ==="{}"){
+            alert("you haven't chosen any delivery option & address")
+        }
+        else if (mydeliveryopt ==="{}"){
+            alert("you haven't chosen any delivery option")
+        }
+        else if (mydeliveryadd ==="{}"){
+            alert("you have not chosen an address")
+        }
+    })
+</script>
+{% endblock %}

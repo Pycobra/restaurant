@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block stylesheet %}{% static 'styles/order/user_order.css' %}{% endblock %}
+{% block stylesheet2 %}{% static 'styles/breadcrumbs.css' %}{% endblock %}
+
+{% block title %} My Orders {% endblock %}
+{% block content %}
+
+<section id="main-container">
+  <div class="main-box">
+      <div class="main-head"><h1>Your Order</h1></div>
+      <div class="box">
+          {% if order_reciept %}
+          <div class="inside-box">
+              <div class="body-row" style="background-color:var(--normalwhite);">
+                  {% for reciepts in order_reciept %}
+                  <div class="cover">
+                      <div class="first-block">
+                          <div class="innerblock1">
+                              <div class="main">
+                                  <div class="text-1"><span>Ref No:</span><span>{{reciepts.id}}</span></div>
+                                  <div class="text-1"><span>{% if reciepts.verified %}Amount paid {% else %} Amount{% endif %}:</span><span>N{{reciepts.total_paid}}</span></div>
+                                  <div class="text-1"><span>Payment option:</span><span>{{reciepts.payment_option}}</span></div>
+                                  <div class="text-1"><span>Items qty:</span><span>{{reciepts.total_quantity}}{% if reciepts.total_quantity == '1' %} item {% else %} items {% endif %}</span></div>
+
+                                  <i {% if reciepts.verified %} class="fa fa-check" style="color:green;" {% else %} class="fa fa-times" style="color:var(--lightred);" {% endif %}"></i>
+                              </div>
+                              <button>Delivery Instructions</button>
+                              <div class="delivery">
+                                  <div class="texts"><span>Delivery region:</span><span>{{reciepts.delivery_instructions.delivery_region}}</span></div>
+                                  <div class="texts"><span>Shipping fee:</span><span>N{{reciepts.delivery_instructions.delivery_price}}</span></div>
+                                  <div class="texts"><span>Method:</span><span>{{reciepts.delivery_instructions.delivery_method}}</span></div>
+                                  <div class="texts"><span>Time frame:</span><span>Within {{reciepts.delivery_instructions.delivery_timeframe}}</span></div>
+                                  <div class="texts"><span>Window:</span><span>Between {{reciepts.delivery_instructions.delivery_window}}</span></div>
+                              </div>
+                              <button>Address</button>
+                              <div class="address">
+                                  <div class="texts"><span>Delivery region:</span><span>{{reciepts.delivery_address.full_name}}</span></div>
+                                  <div class="texts"><span>Phone:</span><span>{{reciepts.delivery_address.phone}}</span></div>
+                                  <div class="texts"><span>Email:</span><span>{{reciepts.delivery_address.email}}</span></div>
+                                  <div class="texts"><span>Postal Code:</span><span>{{reciepts.delivery_address.postal_code}}</span></div>
+                                  <div class="texts"><span>Address1:</span><span>{{reciepts.delivery_address.address_line1}}</span></div>
+                                  <div class="texts"><span>Address2:</span><span>{{reciepts.delivery_address.address_line2}}</span></div>
+                                  <div class="texts"><span>City:</span><span>{{reciepts.delivery_address.city}}</span></div>
+                              </div>
+                          </div>
+                          {% for pic in album %}
+                          {% if pic.0.order.order_key == reciepts.order_key %}
+                          <div class="innerblock2">
+                              <div class="block1 card1" data-index="{{reciepts.order_key}}">
+                              {% for image in pic.0.product.product_images.all %}
+                              {% if image.is_main %}
+                              <img src="{{ image.images.url }}" alt="{{ image.images.alt_text }}">
+                              {% endif %}
+                              {% endfor %}
+                              </div>
+
+                               <div data-index="{{ item_detail.product.id }}" class="block2 cart-item">
+                                  {% for item_detail in ordered_item_detail %}
+                                  {% if item_detail.order.order_key == reciepts.order_key %}
+                                  <div class="card2">
+                                      <div class="box1">
+                                          {% for image in item_detail.product.product_images.all %}
+                                          {% if image.is_main %}
+                                          <img data-index="{{reciepts.order_key}}" src="{{ image.images.url }}" alt="{{ image.images.alt_text }}">
+                                          {% endif %}
+                                          {% endfor %}
+                                      </div>
+                                  </div>
+                                  {% endif %}
+                                  {% endfor %}
+                               </div>
+                          </div>
+                          {% endif %}
+                          {% endfor %}
+                      </div>
+                  </div>
+                  {% endfor %}
+
+
+              </div>
+          </div>
+          {% else %}
+          <div class="empty">
+            <p>You have not made any order</p>
+          </div>
+          {% endif %}
+      </div>
+
+
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+    <!-- <script src="https://js.stripe.com/v3/"></script> -->
+    <script>
+    $(document).ready(function(){
+        $('img').on(
+            {mousedown: function(){
+                id = $(this).data('index')
+                $('.card1[data-index="' + id + '"]').html($(this).clone(true));
+
+            }}
+        );
+    });
+    </script>
+{% endblock %}
+

@@ -1,0 +1,43 @@
+<div class="signUp">
+  <div class="inner">
+      <span class="head">Create account</span>
+      <form class="account-register-form" action="{% url "account_:register" %}" method="post">
+          {% csrf_token %}
+
+          {{ registerform.user_name}}
+          {{ registerform.email}}
+          {{ registerform.password}}
+          {{ registerform.password2}}
+          <button type="submit">Sign up</button>
+      </form>
+      <span class="icon2"><span>OR</span></span>
+      <div class="floor">
+          <span class="main">Already have an account? <span class="in">Log in</span></span>
+          <span>Forgotten password?</span>
+      </div>
+  </div>
+</div>
+
+
+{% block scripts %}
+<script>
+    $('.signUp > .inner > .floor > .main').on(
+        {click: function(e){
+            e.preventDefault();
+            $('.signUp').css('display', 'none');
+            $('.login').css('display', 'flex');
+
+        }}
+    )
+
+    $('.login > .inner > .floor > .main').on(
+        {click: function(e){
+            e.preventDefault();
+            $('.login').css('display', 'none');
+            $('.signUp').css('display', 'flex');
+
+        }}
+    )
+
+</script>
+{% endblock %}

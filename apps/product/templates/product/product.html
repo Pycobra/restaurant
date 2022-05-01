@@ -1,0 +1,232 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+{% block stylesheet %}{% static 'styles/product/product.css' %}{% endblock %}
+{% block stylesheet2 %}{% static 'styles/breadcrumbs.css' %}{% endblock %}
+
+{% block title %}
+{% if product %}{{ product.title }}{% else %}Product{% endif %}
+{% endblock %}
+
+{% block content %}
+<section id="main-container" xmlns="http://www.w3.org/1999/html">
+  <div class="main-box">
+      <div class="main-head">
+          <div id="head-notification" class="notification-success">
+              <div id="notification-message"></div>
+          </div>
+          <!--
+          <ul class="breadcrumbs">
+              <li><a href="/">Home</a></li>
+                  {% for slug,name in breadcrumbs %}
+                      <li><a href="{% url 'product_:category' slug %}">>  {{ name }}</a></li>
+                  {% endfor %}
+              <li> > {{product.title}}</li>
+          </ul>
+          -->
+      </div>
+
+      <div class="box">
+          <div class="inside-box">
+              <div class="body-row">
+                  <div class="top">
+                      <div class="first-block">
+                          {% if request.user.is_authenticated and request.user.is_staff %}
+                          <a id="edit" href=""><i class="fa fa-pencil" style="font-size:30px;"></i><span>edit</span></a>
+                          {% endif %}
+                          <div class="block1">
+                              <div class="innerblock1">
+                                  <img class="img-fluid mx-auto d-block" src="{{ product.images.url }}" alt="{{ image.images.alt_text }}">
+                              </div>
+                          </div>
+                          <div class="block2">
+                              <div class="innerblock">
+                                  <div class="first-line">
+                                      <div class="title">
+                                          <span class="name">{{ product.title }}</span>
+                                          <span class="spec">{% if product_spec %}{% for i in product_spec %} _ {{i.value}} {% endfor %}{% endif %}</span>
+                                          <span class="descr">{{ product.description|slice:":100" }}</span>
+                                      </div>
+                                      <button data-index="{{ product_id }}" class="button" id="add-to-cart-btn" value="{{ product_id }}"><i class="fa fa-cart-plus" style="font-weight:bold;font-size:25px;"></i>Add&nbsp;to&nbsp;basket</button>
+
+                                      <!-- <div class="social">
+                                          <div id="wishlist">
+                                              {% if wishlist_boolean %}
+                                              <i class="fa fa-shopping-bag" class="icon1" style="color:var(--lightblue);"> Remove</i>
+                                              {% else %}
+                                              <i class="fa fa-shopping-bag" class="icon1" style="color:var(--lightblue);"> Add</i>
+                                              {% endif %}
+                                          </div>
+                                          <div id="likes">
+                                              {% if like_boolean %}
+                                              <i class="fa fa-heart-o" class="icon2" style="color:var(--lightblue);"> unlike</i>
+                                              {% else %}
+                                              <i class="fa fa-heart-o" class="icon2" style="color:var(--lightblue);"> like</i>
+                                              {% endif %}
+                                          </div>
+                                      </div>-->
+                                  </div>
+                                  <span style="width:100%;height:1px;background-color:rgba(0,0,0,0.1);"></span>
+                                  <div class="second-line">
+                                      {% if product.discount_price != 0 %}
+                                      <span class="discount"><strong style="margin:12px 0;font-size:23px;font-weight:900;color:var(--normalblack);">N {{ product.discount_price }} </strong></span>
+                                      <span class="price"><strike>N {{ product.price }} </strike>
+                                          <span class="percent">- {{ product.discount_percent }}%</span>
+                                      </span>
+                                      {% else %}
+                                      <span class="price"><strong class="price" style="margin:12px 0;font-size:26px;font-weight:900;color:var(--normalblack);">{{ product.price }}</strong></span>
+                                      {% endif %}
+                                      <input style="display:none;" type="number" name="quantity" id="add-to-cart-input" value="1" class="input" min="1">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="last-block">
+                          <div class="box1">
+                              <div class="door-delivery">
+                                  <i class="fa fa-heart-o" style="color:var(--normalblack);"></i>
+                                  <div>
+                                      <div>Door Delivery</div>
+                                      <div><span style="font-weight:normal;font-size:14px;">Shipping</span> <span>#450</span></div>
+                                  </div>
+                              </div>
+                              <hr>
+                              <div class="pick-up">
+                                  <i class="fa fa-heart-o" style="color:var(--normalblack);"></i>
+                                  <div>
+                                      <div>Pickup Station</div>
+                                      <div><span style="font-weight:normal;font-size:14px;">Shipping</span> <span>#180</span></div>
+                                  </div>
+                              </div>
+                              <hr>
+                              <div class="return-policy">
+                                  <i class="fa fa-heart-o" style="color:var(--normalblack);"></i>
+                                  <div>
+                                      <div>Return Policy</div>
+                                      <div style="font-weight:normal;font-size:14px;">unsatisfactory Items must be returned in 7days after purchase</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+
+    $('.sub-image').on(
+        {mousedown: function(){
+            $("#product-container > .outerbox-column > .box > .outerbox-block > .innerbox-row > .first-block > .block1 > .innerblock1").html($(this).clone(true));
+
+        }}
+    );
+
+    $('#add-to-cart-btn').on(
+        {click: function(e){
+            e.preventDefault();
+            var prod_id=$(this).data('index');
+            $.ajax({
+                type:"POST",
+                url:"{% url 'cart_:cart_detail' %}",
+                data: {
+                    productQTY: $('#add-to-cart-input').val(),
+                    productID: $(this).data('index'),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    mainAction: 'post',
+                    subAction: 'add'
+                },
+                success: function(json){
+                    $("a > .cart > .qty").text(json.cart_length);
+                    if (json.product_exist == true) {
+                        $('#notification-message').html('<i class="fa fa-info"></i><span>This item already exists in your cart</span>')
+                    }
+                    else {
+                        $('#notification-message').html('<i class="fa fa-info"></i><span>item has been added to cart</span>>')
+                    }
+                    $('#head-notification').slideDown(500).delay(2000).slideUp(500);
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+    $('#wishlist').on(
+        {click: function(e){
+            e.preventDefault();
+            $.ajax({
+                type:"GET",
+                url:"{% url "account_:wishlist_add_and_remove" product_id  %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'get'
+                },
+                success: function(json){
+                    $("#wishlist-no").text('('+ json.wishlist_no +') wishlist');
+                    $('#wishlist').html(json.action_text)
+                    if (json.product_exist == true) {
+                        $('#notification-message').html('<i class="fa fa-info"></i><span>item has been removed from your wishlist</span>')
+                    }
+                    else {
+                        $('#notification-message').html('<i class="fa fa-info"></i><span>item has been added to your wishlist</span>')
+                    }
+                    $('#head-notification').slideDown(500).delay(2000).slideUp(500);
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+    $('#likes').on(
+        {click: function(e){
+            e.preventDefault();
+            $.ajax({
+                type:"GET",
+                url:" {% url "product_:likes_add_and_remove" product.id  %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    action: 'get'
+                },
+                success: function(json){
+                    $("#likes-no").text('('+ json.likes_no +') likes');
+                    $('#likes').html('<i class="fa fa-heart-o" id="icon2" style="color:var(--lightblue);"> Unlike</i>')
+                    $('#likes').html(json.action_text)
+                    if (json.product_exist == true) {
+                        $('#notification-message').html('<i class="fa fa-info"></i></span><span>You unliked this item</span>')
+                    }
+                    else {
+                        $('#notification-message').html('<i class="fa fa-info"></i></span><span>You liked this item</span>')
+                    }
+                    $('#head-notification').slideDown(500).delay(2000).slideUp(500);
+                },
+                error: function(xhr, errmsg, err){
+                    console.log('completed with error');
+                }
+            });
+
+        }}
+    )
+
+});
+</script>
+{% endblock %}
+
+
+
+
+
